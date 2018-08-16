@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Configuration monitorinterval="30" status="info" strict="true">
+    <Appenders>
+        <Appender type="Console" name="Console">
+            <Layout type="PatternLayout" pattern="%d %-6p [%c{1.}] (%t) %m%n" />
+        </Appender>
+    </Appenders>
+    <Loggers>
+        <Root level="INFO">
+            <AppenderRef ref="Console" />
+        </Root>
+        <!-- Only log fatal messages. We are using this config only for unit tests where warnings are common. -->
+        <Logger name="de.poiu.apron" level="FATAL" />
+    </Loggers>
+</Configuration>

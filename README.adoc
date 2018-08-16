@@ -1,0 +1,80 @@
+Apron
+=====
+Marco Herrn <marco@mherrn.de>
+2018-05-14
+:toc:
+:homepage: https://github.com/hupfdule/apron
+:download-page: https://github.com/hupfdule/apron/releases
+:license-link: https://github.com/hupfdule/apron/blob/master/LICENSE-2.0.html
+:kilt-homepage: https://github.com/hupfdule/kilt
+:apron-version: 1.0.0
+
+[.float-group]
+--
+image:apron-icon.svg[Apron,role="right", width="75"]
+Apron - Advanced Properties 
+
+Read and write Java .properties files in a more sane manner.
+--
+
+
+What is Apron
+-------------
+
+Apron is a small library for reading and writing Java .properties files.
+The main goal of this library is to be compatible with the
+`java.util.Properties` class. Not API-wise (the API is quite different),
+but being able to read every Java .properties file and getting exactly the
+same key-value-pairs as `java.util.Properties` does.
+
+However Apron maintains the order of the entries in the properties files
+and also the comments, blank lines and whitespace before keys and around
+separators.
+
+This allows writing .properties files back that do not differ from the
+original ones.
+
+Apron was mainly written to be used in the {kilt-homepage}[Kilt toolset],
+but was intended from the start to be a general purpose library.
+
+
+Prerequisites
+-------------
+
+Apron has no runtime dependencies on other libraries.
+
+Apron can be used with Java 8 or higher.
+
+
+Installation
+------------
+
+To use Apron in a maven based project use the following maven coordinates:
+
+    <dependency>
+      <groupId>de.poiu.apron</groupId>
+      <artifactId>apron</artifactId>
+      <version>{apron-version}</version>
+    <dependency>
+
+Otherwise download the jar-file of Apron from the {download-page}[Download
+page] and put it into the classpath of your application.
+
+
+Usage
+-----
+
+// TODO: Da muss dann was geschrieben werden
+
+
+Known Bugs
+----------
+
+// TODO: Die auskommentierten Testfälle
+
+
+License
+-------
+
+Apron is licensed under the terms of the link:{license-link}[Apache license
+2.0].

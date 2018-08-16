@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8" standalone="no"?>
+
+<svg
+   xmlns:svg="http://www.w3.org/2000/svg"
+   xmlns="http://www.w3.org/2000/svg"
+   xmlns:xlink="http://www.w3.org/1999/xlink"
+   version="1.0"
+   viewBox="-2 -8 24 30"
+   id="svgroot">
+
+<g id="kilt">
+  <polygon id="outer-line" stroke="#880b0b" stroke-width="2" fill="none" points="2,0 0,20 20,20 18,0" />
+  <polygon id="inner-line" stroke="#880b0b" stroke-width="2" fill="none" points="6,0 6,-6 14,-6 14,0" />
+</g>
+
+</svg>
+
