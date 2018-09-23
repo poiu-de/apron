@@ -18,7 +18,6 @@ package de.poiu.apron;
 import de.poiu.apron.entry.BasicEntry;
 import de.poiu.apron.entry.Entry;
 import de.poiu.apron.entry.PropertyEntry;
-import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -31,12 +30,12 @@ import java.io.PrintWriter;
 import java.nio.charset.Charset;
 import static java.nio.charset.StandardCharsets.ISO_8859_1;
 import static java.nio.charset.StandardCharsets.UTF_8;
+import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-import java.util.Random;
+import java.util.Set;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import static org.assertj.core.api.Assertions.fail;
 import org.junit.Ignore;
 import org.junit.Test;
 
@@ -818,6 +817,7 @@ public class PropertyFileTest {
 
   @Test
   public void test_LiteralNewline() throws IOException {
+    // - preparation
     // \n as readable two-character sequence should lead to a real line break
     // - preparation
     final File propertyFile= this.createTestFile(""
@@ -853,6 +853,7 @@ public class PropertyFileTest {
 
   @Test
   public void testWritePropertyFile() throws IOException {
+    // - preparation
     final File propertyFile= this.createTestFile(""
         + "keyA1 =  valueA1\n"
         + "keyA2 = value A=2\n"
@@ -882,6 +883,7 @@ public class PropertyFileTest {
 
   @Test
   public void testWritePropertyFile_ChangedValueFormatButSameContent() throws IOException {
+    // - preparation
     final File propertyFile= this.createTestFile(""
         + "strange\\ \\\n"
       + "  \tkey= strange \\\n"
@@ -913,6 +915,7 @@ public class PropertyFileTest {
 
   @Test
   public void testWritePropertyFile_SomeUpdateEntries_SomeAppendedEntries() throws IOException {
+    // - preparation
     final File propertyFile= this.createTestFile(""
         + "stable\\ key = not updated\n"
         + "nextKey = Schüsselښ"
@@ -939,6 +942,7 @@ public class PropertyFileTest {
 
   @Test
   public void testWritePropertyFile_UTF8_to_ISO88591() throws IOException {
+    // - preparation
     final File propertyFile= this.createTestFile(""
         + "nextKey = Schüsselښ"
       , UTF_8
@@ -950,7 +954,7 @@ public class PropertyFileTest {
 
     // - execution
     readPropertyFile.setValue("UTF-8-key-Äሴ", "UTF-8-value-編Я");
-    readPropertyFile.saveTo(targetFile, ISO_8859_1);
+    readPropertyFile.saveTo(targetFile, Options.create().with(ISO_8859_1));
 
     // - validation
     final String newFileContent= toString(targetFile, ISO_8859_1);
@@ -963,6 +967,7 @@ public class PropertyFileTest {
 
   @Test
   public void testWritePropertyFile_ISO88591_to_UTF8() throws IOException {
+    // - preparation
     final File propertyFile= this.createTestFile(""
         + "nextKey = Sch\\u00fcssel\\u069a"
       , ISO_8859_1
@@ -974,7 +979,7 @@ public class PropertyFileTest {
 
     // - execution
     readPropertyFile.setValue("UTF-8-key-Äሴ", "UTF-8-value-編Я");
-    readPropertyFile.saveTo(targetFile, UTF_8);
+    readPropertyFile.saveTo(targetFile, Options.create().with(UTF_8));
 
     // - validation
     final String newFileContent= toString(targetFile, UTF_8);
@@ -987,6 +992,7 @@ public class PropertyFileTest {
 
   @Test
   public void testWritePropertyFile_ISO88591_to_UTF8_updateContent() throws IOException {
+    // - preparation
     final File propertyFile= this.createTestFile(""
         + "nextKey = Sch\\u00fcssel\\u069a"
       , ISO_8859_1
@@ -996,7 +1002,7 @@ public class PropertyFileTest {
     // - execution
     readPropertyFile.setValue("UTF-8-key-Äሴ", "UTF-8-value-編Я");
     readPropertyFile.setValue("nextKey", "Schlüsselښ");  //overwrite value with a different content (added 'l' between h and 'ü')
-    readPropertyFile.saveTo(propertyFile, UTF_8);
+    readPropertyFile.saveTo(propertyFile, Options.create().with(UTF_8));
 
     // - validation
     final String newFileContent= toString(propertyFile, UTF_8);
@@ -1009,6 +1015,7 @@ public class PropertyFileTest {
 
   @Test
   public void testWritePropertyFile_ISO88591_to_UTF8_updateContentWithoutRealChanges() throws IOException {
+    // - preparation
     final File propertyFile= this.createTestFile(""
         + "nextKey = Sch\\u00fcssel\\u069a"
       , ISO_8859_1
@@ -1018,7 +1025,7 @@ public class PropertyFileTest {
     // - execution
     readPropertyFile.setValue("UTF-8-key-Äሴ", "UTF-8-value-編Я");
     readPropertyFile.setValue("nextKey", "Schüsselښ");  //overwrite value with the same content
-    readPropertyFile.saveTo(propertyFile, UTF_8);
+    readPropertyFile.saveTo(propertyFile, Options.create().with(UTF_8));
 
     // - validation
     final String newFileContent= toString(propertyFile, UTF_8);
@@ -1032,6 +1039,7 @@ public class PropertyFileTest {
   @Test
   @Ignore("This is postponed for later. When doing PropertyFileWriter#writeEntry() we need to tell the writer to convert everything to UTF-8")
   public void testWritePropertyFile_ISO88591_to_UTF8_toNewFile() throws IOException {
+    // - preparation
     // all UTF-8 characters should be written as is, not as escape sequences
     final File propertyFile= this.createTestFile(""
         + "nextKey = Sch\\u00fcssel\\u069a"
@@ -1044,7 +1052,7 @@ public class PropertyFileTest {
 
     // - execution
     readPropertyFile.setValue("UTF-8-key-Äሴ", "UTF-8-value-編Я");
-    readPropertyFile.saveTo(targetFile, UTF_8);
+    readPropertyFile.saveTo(targetFile, Options.create().with(UTF_8));
 
     // - validation
     final String newFileContent= toString(targetFile, UTF_8);
@@ -1057,6 +1065,7 @@ public class PropertyFileTest {
 
   @Test
   public void testWritePropertyFile_ISO88591_to_UTF8_updateExistingFile() throws IOException {
+    // - preparation
     // only new entries are written as UTF-8 characters. Existing ones remain as they are (maybe as unicode escape sequences)
     final File propertyFile= this.createTestFile(""
         + "nextKey = Sch\\u00fcssel\\u069a"
@@ -1066,7 +1075,7 @@ public class PropertyFileTest {
 
     // - execution
     readPropertyFile.setValue("UTF-8-key-Äሴ", "UTF-8-value-編Я");
-    readPropertyFile.saveTo(propertyFile, UTF_8);
+    readPropertyFile.saveTo(propertyFile, Options.create().with(UTF_8));
 
     // - validation
     final String newFileContent= toString(propertyFile, UTF_8);
@@ -1080,6 +1089,7 @@ public class PropertyFileTest {
 
   @Test
   public void testWritePropertyFile_ReadAndWriteISO88591() throws IOException {
+    // - preparation
     final File propertyFile= this.createTestFile(""
         + "UTF-8-key-\\u00c4\\u1234 = UTF-8-value-\\u7de8\\u042f"
       , ISO_8859_1
@@ -1091,7 +1101,7 @@ public class PropertyFileTest {
 
     // - execution
     readPropertyFile.setValue("nextKey", "Schüssel");
-    readPropertyFile.saveTo(targetFile, ISO_8859_1);
+    readPropertyFile.saveTo(targetFile, Options.create().with(ISO_8859_1));
 
     // - validation
     final String newFileContent= toString(targetFile, ISO_8859_1);
@@ -1104,6 +1114,7 @@ public class PropertyFileTest {
 
   @Test
   public void testWritePropertyFile_ReadAndWriteUTF8() throws IOException {
+    // - preparation
     final File propertyFile= this.createTestFile(""
         + "UTF-8-key-Äሴ = UTF-8-value-編Я"
       , UTF_8
@@ -1115,7 +1126,7 @@ public class PropertyFileTest {
 
     // - execution
     readPropertyFile.setValue("nextKey", "Schüssel");
-    readPropertyFile.saveTo(targetFile, UTF_8);
+    readPropertyFile.saveTo(targetFile, Options.create().with(UTF_8));
 
     // - validation
     final String newFileContent= toString(targetFile, UTF_8);
@@ -1128,6 +1139,7 @@ public class PropertyFileTest {
 
   @Test
   public void testWritePropertyFile_UnicodeValuesAsUTF8() throws IOException {
+    // - preparation
     final PropertyFile propertyFile= new PropertyFile();
 
     final File targetFile= this.createTestFile("");
@@ -1136,7 +1148,7 @@ public class PropertyFileTest {
     // - execution
     propertyFile.setValue("nextKey", "Schüsselښ");
     propertyFile.setValue("UTF-8-key-Äሴ", "UTF-8-value-編Я");
-    propertyFile.saveTo(targetFile, UTF_8);
+    propertyFile.saveTo(targetFile, Options.create().with(UTF_8));
 
     // - validation
     final String newFileContent= toString(targetFile, UTF_8);
@@ -1149,6 +1161,7 @@ public class PropertyFileTest {
 
   @Test
   public void testWritePropertyFile_UnicodeValuesAsEscapeSequence() throws IOException {
+    // - preparation
     final PropertyFile propertyFile= new PropertyFile();
 
     final File targetFile= this.createTestFile("");
@@ -1157,7 +1170,7 @@ public class PropertyFileTest {
     // - execution
     propertyFile.setValue("nextKey", "Schüsselښ");
     propertyFile.setValue("UTF-8-key-Äሴ", "UTF-8-value-編Я");
-    propertyFile.saveTo(targetFile, ISO_8859_1);
+    propertyFile.saveTo(targetFile, Options.create().with(ISO_8859_1));
 
     // - validation
     final String newFileContent= toString(targetFile, ISO_8859_1);
@@ -1170,6 +1183,7 @@ public class PropertyFileTest {
 
   @Test
   public void testAppendEntry_DuplicateKey() throws IOException {
+    // - preparation
     final PropertyFile propertyFile= new PropertyFile();
 
     final File targetFile= this.createTestFile("");
@@ -1206,6 +1220,7 @@ public class PropertyFileTest {
 
   @Test
   public void testUpdate_NonExistantFile() throws IOException {
+    // - preparation
     final PropertyFile propertyFile= new PropertyFile();
 
     final File targetFile= this.createTestFile("");
@@ -1216,6 +1231,341 @@ public class PropertyFileTest {
     propertyFile.appendEntry(new PropertyEntry("someOtherKey", "withAnotherValue"));
 
     assertThatThrownBy(() -> propertyFile.update(targetFile)).hasCauseInstanceOf(FileNotFoundException.class);
+  }
+
+
+  @Test
+  public void testUpdate_RetainMissingKeys() throws IOException {
+    // - preparation
+    final File propertyFile= this.createTestFile(""
+      + "keyA1 =  valueA1\n"
+      + "keyA2 = value A2 \\\n"
+      + "          over multiple \\\n"
+      + "          lines\n"
+      + "keyA3 : value A3\n"
+    );
+    final PropertyFile readPropertyFile= PropertyFile.from(propertyFile);
+
+    // - execution
+    readPropertyFile.setValue("keyA1", "NEW valueA1");
+    readPropertyFile.remove("keyA2");
+    readPropertyFile.setValue("keyA4", "NEW value A4");
+
+    readPropertyFile.update(propertyFile, Options.create().with(MissingKeyAction.NOTHING));
+
+    // - validation
+    final String newFileContent= toString(propertyFile);
+    System.out.println(newFileContent);
+    assertThat(newFileContent).isEqualTo(""
+      + "keyA1 =  NEW valueA1\n"
+      + "keyA2 = value A2 \\\n"
+      + "          over multiple \\\n"
+      + "          lines\n"
+      + "keyA3 : value A3\n"
+      + "keyA4 = NEW value A4\n"
+    );
+  }
+
+
+  @Test
+  public void testUpdate_DeleteMissingKeys() throws IOException {
+    // - preparation
+    final File propertyFile= this.createTestFile(""
+      + "keyA1 =  valueA1\n"
+      + "keyA2 = value A2 \\\n"
+      + "          over multiple \\\n"
+      + "          lines\n"
+      + "keyA3 : value A3\n"
+    );
+    final PropertyFile readPropertyFile= PropertyFile.from(propertyFile);
+
+    // - execution
+    readPropertyFile.setValue("keyA1", "NEW valueA1");
+    readPropertyFile.remove("keyA2");
+    readPropertyFile.setValue("keyA4", "NEW value A4");
+    readPropertyFile.update(propertyFile, Options.create().with(MissingKeyAction.DELETE));
+
+    // - validation
+    final String newFileContent= toString(propertyFile);
+    assertThat(newFileContent).isEqualTo(""
+        + "keyA1 =  NEW valueA1\n"
+        + "keyA3 : value A3\n"
+        + "keyA4 = NEW value A4\n"
+    );
+  }
+
+
+  @Test
+  public void testUpdate_CommentMissingKeys() throws IOException {
+    // - preparation
+    final File propertyFile= this.createTestFile(""
+      + "keyA1 =  valueA1\n"
+      + "keyA2 = value A2 \\\n"
+      + "          over multiple \\\n"
+      + "          lines\n"
+      + "keyA3 : value A3\n"
+    );
+    final PropertyFile readPropertyFile= PropertyFile.from(propertyFile);
+
+    // - execution
+    readPropertyFile.setValue("keyA1", "NEW valueA1");
+    readPropertyFile.remove("keyA2");
+    readPropertyFile.setValue("keyA4", "NEW value A4");
+    readPropertyFile.update(propertyFile, Options.create().with(MissingKeyAction.COMMENT));
+
+    // - validation
+    final String newFileContent= toString(propertyFile);
+    System.out.println(newFileContent);
+    assertThat(newFileContent).isEqualTo(""
+      + "keyA1 =  NEW valueA1\n"
+      + "#keyA2 = value A2 \\\n"
+      + "#          over multiple \\\n"
+      + "#          lines\n"
+      + "keyA3 : value A3\n"
+      + "keyA4 = NEW value A4\n"
+    );
+  }
+
+
+  @Test
+  public void testKeys() {
+    // - preparation
+    final File propertyFile= this.createTestFile(""
+      + "keyA1 =  valueA1\n"
+      + " \t\n"
+      + "keyA2 = value A2 \\\n"
+      + "          over multiple \\\n"
+      + "          lines\n"
+      + " # comment line\n"
+      + "keyA3 : value A3\n"
+    );
+    final PropertyFile readPropertyFile= PropertyFile.from(propertyFile);
+
+    // - execution
+    final Set<String> keys= readPropertyFile.keys();
+
+    // - verification
+    assertThat(keys).containsExactly("keyA1", "keyA2", "keyA3");
+  }
+
+
+  @Test
+  public void testValues() {
+    // - preparation
+    final File propertyFile= this.createTestFile(""
+      + "keyA1 =  valueA1\n"
+      + " \t\n"
+      + "keyA2 = value A2 \\\n"
+      + "          over multiple \\\n"
+      + "          lines\n"
+      + " # comment line\n"
+      + "keyA3 : value A3\n"
+    );
+    final PropertyFile readPropertyFile= PropertyFile.from(propertyFile);
+
+    // - execution
+    final List<String> values= readPropertyFile.values();
+
+    // - verification
+    assertThat(values).containsExactly(
+      "valueA1",
+      "value A2 over multiple lines",
+      "value A3");
+  }
+
+
+  @Test
+  public void testRemovePropertyEntry() {
+    // - preparation
+    final File propertyFile= this.createTestFile(""
+      + "keyA1 =  valueA1\n"
+      + " \t\n"
+      + "keyA2 = value A2 \\\n"
+      + "          over multiple \\\n"
+      + "          lines\n"
+      + " # comment line\n"
+      + "keyA3 : value A3\n"
+    );
+    final PropertyFile readPropertyFile= PropertyFile.from(propertyFile);
+
+    // - execution
+    readPropertyFile.remove(new PropertyEntry("", "keyA1", " =  ", "valueA1", "\n"));
+
+    // - verification
+    assertThat(readPropertyFile.getAllEntries()).containsExactly(
+      new BasicEntry(" \t\n"),
+      new PropertyEntry("", "keyA2", " = ", "value A2 \\\n"
+      + "          over multiple \\\n"
+      + "          lines", "\n"),
+      new BasicEntry(" # comment line\n"),
+      new PropertyEntry("", "keyA3", " : ", "value A3", "\n"));
+  }
+
+
+  @Test
+  public void testRemoveBasicEntry() {
+    // - preparation
+    final File propertyFile= this.createTestFile(""
+      + " # comment line to be removed \n"
+      + "keyA1 =  valueA1\n"
+      + " \t\n"
+      + " # comment line to remain\n"
+      + "keyA2 = value A2 \\\n"
+      + "          over multiple \\\n"
+      + "          lines\n"
+      + " # comment line to be removed \n"
+      + "keyA3 : value A3\n"
+    );
+    final PropertyFile readPropertyFile= PropertyFile.from(propertyFile);
+
+    // - execution
+    readPropertyFile.remove(new BasicEntry(" # comment line to be removed \n"));
+
+    // - verification
+    assertThat(readPropertyFile.getAllEntries()).containsExactly(
+      new PropertyEntry("", "keyA1", " =  ", "valueA1", "\n"),
+      new BasicEntry(" \t\n"),
+      new BasicEntry(" # comment line to remain\n"),
+      new PropertyEntry("", "keyA2", " = ", "value A2 \\\n"
+      + "          over multiple \\\n"
+      + "          lines", "\n"),
+      new PropertyEntry("", "keyA3", " : ", "value A3", "\n"));
+  }
+
+
+  @Test
+  public void testReplaceBasicEntryWithBasicEntry() {
+    // - preparation
+    final File propertyFile= this.createTestFile(""
+      + " # comment line to be removed \n"
+      + "keyA1 =  valueA1\n"
+      + " \t\n"
+      + " # comment line to remain\n"
+      + "keyA2 = value A2 \\\n"
+      + "          over multiple \\\n"
+      + "          lines\n"
+      + " # comment line to be removed \n"
+      + "keyA3 : value A3\n"
+    );
+    final PropertyFile readPropertyFile= PropertyFile.from(propertyFile);
+
+    // - execution
+    final boolean replaced= readPropertyFile.replace(new BasicEntry(" # comment line to be removed \n"), new BasicEntry(" # the new comment\n"));
+
+    // - verification
+    assertThat(replaced).isTrue();
+    assertThat(readPropertyFile.getAllEntries()).containsExactly(
+      new BasicEntry(" # the new comment\n"),
+      new PropertyEntry("", "keyA1", " =  ", "valueA1", "\n"),
+      new BasicEntry(" \t\n"),
+      new BasicEntry(" # comment line to remain\n"),
+      new PropertyEntry("", "keyA2", " = ", "value A2 \\\n"
+      + "          over multiple \\\n"
+      + "          lines", "\n"),
+      new BasicEntry(" # comment line to be removed \n"),  // not replaced, since only the first occurrence is replaced
+      new PropertyEntry("", "keyA3", " : ", "value A3", "\n"));
+  }
+
+
+  @Test
+  public void testReplaceBasicEntryWithPropertyEntry() {
+    // - preparation
+    final File propertyFile= this.createTestFile(""
+      + " # comment line to be removed \n"
+      + "keyA1 =  valueA1\n"
+      + " \t\n"
+      + " # comment line to remain\n"
+      + "keyA2 = value A2 \\\n"
+      + "          over multiple \\\n"
+      + "          lines\n"
+      + " # comment line to be removed \n"
+      + "keyA3 : value A3\n"
+    );
+    final PropertyFile readPropertyFile= PropertyFile.from(propertyFile);
+
+    // - execution
+    final boolean replaced= readPropertyFile.replace(new BasicEntry(" # comment line to be removed \n"), new PropertyEntry("newKey", "newValue"));
+
+    // - verification
+    assertThat(replaced).isTrue();
+    assertThat(readPropertyFile.getAllEntries()).containsExactly(
+      new PropertyEntry("newKey", "newValue"),
+      new PropertyEntry("", "keyA1", " =  ", "valueA1", "\n"),
+      new BasicEntry(" \t\n"),
+      new BasicEntry(" # comment line to remain\n"),
+      new PropertyEntry("", "keyA2", " = ", "value A2 \\\n"
+      + "          over multiple \\\n"
+      + "          lines", "\n"),
+      new BasicEntry(" # comment line to be removed \n"),
+      new PropertyEntry("", "keyA3", " : ", "value A3", "\n"));
+  }
+
+
+  @Test
+  public void testReplacePropertyEntryWithBasicEntry() {
+    // - preparation
+    final File propertyFile= this.createTestFile(""
+      + " # comment line to be removed \n"
+      + "keyA1 =  valueA1\n"
+      + " \t\n"
+      + " # comment line to remain\n"
+      + "keyA2 = value A2 \\\n"
+      + "          over multiple \\\n"
+      + "          lines\n"
+      + " # comment line to be removed \n"
+      + "keyA3 : value A3\n"
+    );
+    final PropertyFile readPropertyFile= PropertyFile.from(propertyFile);
+
+    // - execution
+    final boolean replaced= readPropertyFile.replace(new PropertyEntry("", "keyA3", " : ", "value A3", "\n"), new BasicEntry("# replacement"));
+
+    // - verification
+    assertThat(replaced).isTrue();
+    assertThat(readPropertyFile.getAllEntries()).containsExactly(
+      new BasicEntry(" # comment line to be removed \n"),
+      new PropertyEntry("", "keyA1", " =  ", "valueA1", "\n"),
+      new BasicEntry(" \t\n"),
+      new BasicEntry(" # comment line to remain\n"),
+      new PropertyEntry("", "keyA2", " = ", "value A2 \\\n"
+      + "          over multiple \\\n"
+      + "          lines", "\n"),
+      new BasicEntry(" # comment line to be removed \n"),
+      new BasicEntry("# replacement"));
+  }
+
+
+  @Test
+  public void testReplaceNonexistent() {
+    // - preparation
+    final File propertyFile= this.createTestFile(""
+      + " # comment line to be removed \n"
+      + "keyA1 =  valueA1\n"
+      + " \t\n"
+      + " # comment line to remain\n"
+      + "keyA2 = value A2 \\\n"
+      + "          over multiple \\\n"
+      + "          lines\n"
+      + " # comment line to be removed \n"
+      + "keyA3 : value A3\n"
+    );
+    final PropertyFile readPropertyFile= PropertyFile.from(propertyFile);
+
+    // - execution
+    final boolean replaced= readPropertyFile.replace(new BasicEntry("# This entry does not exist\n"), new BasicEntry("# replacement"));
+
+    // - verification
+    assertThat(replaced).isFalse();
+    assertThat(readPropertyFile.getAllEntries()).containsExactly(
+      new BasicEntry(" # comment line to be removed \n"),
+      new PropertyEntry("", "keyA1", " =  ", "valueA1", "\n"),
+      new BasicEntry(" \t\n"),
+      new BasicEntry(" # comment line to remain\n"),
+      new PropertyEntry("", "keyA2", " = ", "value A2 \\\n"
+        + "          over multiple \\\n"
+        + "          lines", "\n"),
+      new BasicEntry(" # comment line to be removed \n"),
+      new PropertyEntry("", "keyA3", " : ", "value A3", "\n"));
   }
 
 

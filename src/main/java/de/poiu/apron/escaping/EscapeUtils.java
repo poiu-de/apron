@@ -417,4 +417,44 @@ public class EscapeUtils {
     }
     return false;
   }
+
+
+  /**
+   * Comments a CharSequence. This is done by prepending it with a '#' character.
+   * <p>
+   * Since PropertyEntries can span multiple lines, this method also prepends each consecutive line
+   * with a '#' character. However there is not check whether the given CharSequence is a PropertyEntry.
+   * This method just comments out all lines in the given CharSequence.
+   *
+   * @param charSequence the CharSequence to comment out
+   * @return the commented out CharSequence
+   */
+  //FIXME: This is not real escaping. Should this method be moved to another (probably new) class?
+  public static CharSequence comment(final CharSequence charSequence) {
+    final StringBuilder sb= new StringBuilder();
+
+    //start with a comment character
+    sb.append("#");
+
+    for (int i=0; i < charSequence.length(); i++) {
+      final char c= charSequence.charAt(i);
+
+      sb.append(c);
+
+      // add a comment character after each newline
+      if (c == '\n' || c == '\r' ) {
+        if (c == '\r' && i + 1 < charSequence.length() && charSequence.charAt(i + 1) == '\n') {
+          sb.append('\n');
+          i++;
+        }
+
+        //only append a comment char if there really are more characters after the newline
+        if (i + 1 < charSequence.length()) {
+          sb.append("#");
+        }
+      }
+    }
+
+    return sb;
+  }
 }

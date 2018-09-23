@@ -247,4 +247,40 @@ public class EscapeUtilsTest {
     assertThat(EscapeUtils.escapePropertyValue("value with :=").toString())
       .isEqualTo("value with :=");
   }
+
+  @Test
+  public void testComment() {
+    assertThat(EscapeUtils.comment(""
+      + "my key = my value \\\n"
+      + "   over \\\r"
+      + "   multiple \\\r\n"
+      + "   lines").toString())
+      .isEqualTo(""
+      + "#my key = my value \\\n"
+      + "#   over \\\r"
+      + "#   multiple \\\r\n"
+      + "#   lines");
+
+    assertThat(EscapeUtils.comment(""
+      + "my key = my value \n"
+      + "   over \r"
+      + "   multiple \r\n"
+      + "   lines").toString())
+      .isEqualTo(""
+      + "#my key = my value \n"
+      + "#   over \r"
+      + "#   multiple \r\n"
+      + "#   lines");
+
+    assertThat(EscapeUtils.comment(""
+      + "my key = my value \n"
+      + "   over \r"
+      + "   multiple \r\n"
+      + "   lines\n").toString())
+      .isEqualTo(""
+      + "#my key = my value \n"
+      + "#   over \r"
+      + "#   multiple \r\n"
+      + "#   lines\n");
+  }
 }

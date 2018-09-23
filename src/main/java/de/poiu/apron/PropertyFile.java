@@ -27,14 +27,18 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.io.Reader;
 import java.nio.charset.Charset;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.LinkedHashMap;
+import java.util.LinkedHashSet;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Optional;
+import java.util.Set;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 
 /**
@@ -165,6 +169,8 @@ public class PropertyFile {
    */
   void appendEntry(final PropertyEntry entry) {
     final String key= EscapeUtils.unescape(entry.getKey()).toString();
+    //FIXME: What to do if the of this entry already exists?
+    //       Throw a DuplicateKeyException?
     this.entries.add(entry);
     this.propertyEntries.put(key, entry);
   }
@@ -193,6 +199,104 @@ public class PropertyFile {
       this.propertyEntries.put(key, entry);
       this.entries.add(entry);
     }
+  }
+
+
+  /**
+   * Removes a key-value-pair and the corresponding PropertyEntry from this
+   * PropertyFile.
+   *
+   * @param key the key of the key-value-pair to remove
+   */
+  public void remove(final String key) {
+    final PropertyEntry removedEntry= this.propertyEntries.remove(key);
+    this.entries.remove(removedEntry);
+  }
+
+
+  /**
+   * Removes an Entry from this PropertyFile.
+   * <p>
+   * If this PropertyFile contains the Entry multiple times (which is possible for BasicEntries
+   * like comments and blank lines) all occurrences will be removed.
+   *
+   * @param entry the Entry to remove from this PropertyFile
+   */
+  public void remove(final Entry entry) {
+    final boolean wasRemoved= this.entries.removeAll(Collections.singleton(entry));
+    if (wasRemoved && entry instanceof PropertyEntry) {
+      for (final Iterator<PropertyEntry> it= this.propertyEntries.values().iterator(); it.hasNext(); ) {
+        final PropertyEntry existingEntry= it.next();
+        if (existingEntry.equals(entry)) {
+          it.remove();
+        }
+      }
+    }
+  }
+
+
+  /**
+   * Replaces an Entry in this PropertyFile with another Entry.
+   * The Entries do not need to be of the same type.
+   * <p>
+   * Be aware that this replaces only the first occurrence of <code>entry</code>.
+   *
+   * @param entry the Entry to replace
+   * @param newEntry the Entry to replace it with
+   * @return if the given Entry was found in this PropertyFile and replaced
+   */
+  public boolean replace(final Entry entry, final Entry newEntry) {
+    //FIXME: What to do if a PropertyEntry with an already existing key is added this way?
+    //       Throw a DuplicateKeyException?
+
+    if (entry instanceof PropertyEntry) {
+      this.propertyEntries.values().remove((PropertyEntry)entry);
+    }
+
+    if (newEntry instanceof PropertyEntry) {
+      final PropertyEntry propertyEntry= (PropertyEntry) newEntry;
+      final String key= EscapeUtils.unescape(propertyEntry.getKey()).toString();
+      this.propertyEntries.put(key, propertyEntry);
+    }
+
+    for (final ListIterator<Entry> it= this.entries.listIterator(); it.hasNext(); ) {
+      final Entry current = it.next();
+      if (current.equals(entry)) {
+        it.set(newEntry);
+        return true;
+      }
+    }
+    return false;
+  }
+
+
+  /**
+   * Returns a set with the keys of all PropertyEntries in this PropertyFile.
+   * Thie returned set is only a snapshot of the current state and will not be updated if the contents of
+   * this PropertyFile change. Also changes to the set are not reflected in this PropertyFile.
+   *
+   * @return the keys in this PropertyFile
+   */
+  public LinkedHashSet<String> keys() {
+    return new LinkedHashSet<>(this.propertyEntries.keySet());
+  }
+
+
+  /**
+   * Returns a list with the values of all PropertyEntries in this PropertyFile.
+   * Thie returned set is only a snapshot of the current state and will not be updated if the contents of
+   * this PropertyFile change. Also changes to the list are not reflected in this PropertyFile.
+   *
+   * @return the values in this PropertyFile
+   */
+  public List<String> values() {
+    final List<String> values= new ArrayList(this.propertyEntries.size());
+
+    this.propertyEntries.forEach((key, propertyEntry) -> {
+      values.add(EscapeUtils.unescape(propertyEntry.getValue()).toString());
+    });
+
+    return values;
   }
 
 
@@ -356,7 +460,7 @@ public class PropertyFile {
    */
   //FIXME: This is not clean. The returned list may be unmodifiable, but the contained entries
   //       are modifiable!
-  //       This method should there remain package private
+  //       This method should therefore remain package private
   List<Entry> getAllEntries() {
     return Collections.unmodifiableList(this.entries);
   }
@@ -371,7 +475,7 @@ public class PropertyFile {
    * @see #overwrite(java.io.File)
    */
   public void saveTo(final File file) {
-    this.saveTo(file, UTF_8);
+    this.saveTo(file, Options.create());
   }
 
 
@@ -415,20 +519,18 @@ public class PropertyFile {
    * and <code>overwrite</code> methods if it is not important whether the target file already
    * exists or not.
    *
-   * FIXME: Option, gelöschte Schlüssel zu entfernen?
-   *
    * @param file the file to write to
-   * @param charset the encoding to use for writing the entries.
+   * @param options Options to respect when writing the .properties file
    * @see #update(java.io.File, java.nio.charset.Charset)
    * @see #overwrite(java.io.File, java.nio.charset.Charset)
    */
-  public void saveTo(final File file, final Charset charset) {
+  public void saveTo(final File file, final Options options) {
     if (file.exists()) {
       // if the file already exists, just update the values that have changed
-      this.update(file, charset);
+      this.update(file, options);
     } else {
       // if the file does not exist yet, just write out the entries
-      this.overwrite(file, charset);
+      this.overwrite(file, options);
     }
   }
 
@@ -442,7 +544,7 @@ public class PropertyFile {
    * @see #overwrite(java.io.OutputStream)
    */
   public void saveTo(final OutputStream outputStream) {
-    this.overwrite(outputStream, UTF_8);
+    this.overwrite(outputStream, Options.create());
   }
 
 
@@ -452,11 +554,11 @@ public class PropertyFile {
    * This method actually only delegates to {@link #overwrite(java.io.OutputStream, java.nio.charset.Charset) }.
    *
    * @param outputStream the OutputStream to write to
-   * @param charset the encoding to use for writing the entries.
+   * @param options Options to respect when writing the .properties file
    * @see #overwrite(java.io.OutputStream, java.nio.charset.Charset)
    */
-  public void saveTo(final OutputStream outputStream, final Charset charset) {
-    this.overwrite(outputStream, charset);
+  public void saveTo(final OutputStream outputStream, final Options options) {
+    this.overwrite(outputStream, options);
   }
 
 
@@ -469,7 +571,7 @@ public class PropertyFile {
    * @see #overwrite(java.io.File)
    */
   public void update(final File file) {
-    update(file, UTF_8);
+    update(file, Options.create());
   }
 
 
@@ -483,15 +585,14 @@ public class PropertyFile {
    * <p>
    * The file is written in the given encoding.
    *
-   * FIXME: Option, gelöschte Schlüssel zu entfernen?
-   *
    * @param file the file to update
-   * @param charset the encoding in which to write the file
+   * @param options Options to respect when writing the .properties file
    * @see #saveTo(java.io.File, java.nio.charset.Charset)
    * @see #overwrite(java.io.File, java.nio.charset.Charset)
    */
-  public void update(final File file, final Charset charset) {
-    final PropertyFile existing= PropertyFile.from(file, charset);
+  public void update(final File file, final Options options) {
+    // first update the values of the key-value-pairs
+    final PropertyFile existing= PropertyFile.from(file, options.getCharset());
     for (final Entry entry : this.entries) {
       // only process PropertyEntries when updating
       if (entry instanceof PropertyEntry) {
@@ -513,7 +614,25 @@ public class PropertyFile {
       }
     }
 
-    //TODO: Delete entries that exist in existing file, but not in new?
+    // then remove or comment out keys that are in the existing, but are missing in this PropertyFile
+    final Stream<String> missingKeyStream= existing.propertyEntries.entrySet().stream()
+      .filter(e -> !this.containsKey(e.getKey()))
+      .map(e -> e.getKey());
+
+    switch(options.getMissingKeyAction()) {
+      case DELETE:
+        missingKeyStream.collect(Collectors.toList()).forEach((missingKey) -> {
+          existing.remove(missingKey);
+        });
+        break;
+      case COMMENT:
+        for (final String missingKey : missingKeyStream.collect(Collectors.toList())) {
+          final PropertyEntry missingPropertyEntry= existing.propertyEntries.get(missingKey);
+          final CharSequence commentedEntry= EscapeUtils.comment(missingPropertyEntry.toCharSequence());
+          existing.replace(missingPropertyEntry, new BasicEntry(commentedEntry));
+        }
+        break;
+    }
 
     // now write the modified PropertyFile to file
     existing.overwrite(file);
@@ -529,7 +648,7 @@ public class PropertyFile {
    * @see #update(java.io.File)
    */
   public void overwrite(final File file) {
-    overwrite(file, UTF_8);
+    overwrite(file, Options.create());
   }
 
 
@@ -541,7 +660,7 @@ public class PropertyFile {
    * @see #saveTo(java.io.OutputStream)
    */
   public void overwrite(final OutputStream outputStream) {
-    overwrite(outputStream, UTF_8);
+    overwrite(outputStream, Options.create());
   }
 
 
@@ -553,12 +672,12 @@ public class PropertyFile {
    * The file is written in the given encoding.
    *
    * @param file the file to write to
-   * @param charset the encoding in which to write the file
+   * @param options Options to respect when writing the .properties file
    * @see #saveTo(java.io.File)
    * @see #update(java.io.File)
    */
-  public void overwrite(final File file, final Charset charset) {
-    try(final PropertyFileWriter writer= new PropertyFileWriter(file, charset)) {
+  public void overwrite(final File file, final Options options) {
+    try(final PropertyFileWriter writer= new PropertyFileWriter(file, options.getCharset())) {
       for (final Entry entry : this.entries) {
         writer.writeEntry(entry);
       }
@@ -576,11 +695,11 @@ public class PropertyFile {
    * The given encoding will be used for writing to the stream.
    *
    * @param outputStream the OutputStream to write to
-   * @param charset the encoding in which to write to the stream
+   * @param options Options to respect when writing the .properties file
    * @see #saveTo(java.io.OutputStream, java.nio.charset.Charset)
    */
-  public void overwrite(final OutputStream outputStream, final Charset charset) {
-    try(final PropertyFileWriter writer= new PropertyFileWriter(outputStream, charset)) {
+  public void overwrite(final OutputStream outputStream, final Options options) {
+    try(final PropertyFileWriter writer= new PropertyFileWriter(outputStream, options.getCharset())) {
       for (final Entry entry : this.entries) {
         writer.writeEntry(entry);
       }
