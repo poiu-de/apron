@@ -36,7 +36,6 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
-import java.util.Set;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 
@@ -677,6 +676,8 @@ public class PropertyFile {
    * @see #update(java.io.File)
    */
   public void overwrite(final File file, final Options options) {
+    this.createPathTo(file);
+
     try(final PropertyFileWriter writer= new PropertyFileWriter(file, options.getCharset())) {
       for (final Entry entry : this.entries) {
         writer.writeEntry(entry);
@@ -705,6 +706,20 @@ public class PropertyFile {
       }
     }catch (IOException ex) {
       throw new RuntimeException("Error writing PropertyFile. ", ex);
+    }
+  }
+
+
+  /**
+   * Creates the directories to the given file.
+   * <p>
+   * This does nothing if the directories already exist.
+   *
+   * @param file the file for which to create that parent paths
+   */
+  private void createPathTo(final File file) {
+    if (!file.exists()) {
+      file.getParentFile().mkdirs();
     }
   }
 }
