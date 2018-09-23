@@ -18,7 +18,6 @@ package de.poiu.apron.escaping;
 import org.apache.logging.log4j.Level;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import de.poiu.fez.Require;
 
 
 /**
@@ -57,12 +56,6 @@ public class EscapeUtils {
    * @throws InvalidUnicodeCharacterException if the given excape sequence cannot be conerted to unicode
    */
   static char translateUnicode(final CharSequence input) throws InvalidUnicodeCharacterException {
-    Require.isTrue(
-      input.length() == 6
-        && input.charAt(0) == '\\'
-        && input.charAt(1) == 'u'
-      , "The given Charsequence must be exactly 6 characters and in the format \\uxxxx where each x must be a digit");
-
     // Get 4 hex digits
     final CharSequence unicode = input.subSequence(2, 6);
     try {
