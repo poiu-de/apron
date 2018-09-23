@@ -29,9 +29,8 @@ import java.io.InputStreamReader;
 import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.Optional;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Logger;
+import java.util.logging.Level;
 
 
 /**
@@ -43,7 +42,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class PropertyFileReader implements Closeable {
 
-  private static final Logger LOGGER= LogManager.getLogger();
+  private static final Logger LOGGER= Logger.getLogger(PropertyFileReader.class.getName());
 
 
   /////////////////////////////////////////////////////////////////////////////
@@ -529,7 +528,7 @@ public class PropertyFileReader implements Closeable {
       try {
         this.reader.close();
       } catch (IOException e) {
-        LOGGER.log(Level.WARN, "Error closing reader.", e);
+        LOGGER.log(Level.WARNING, "Error closing reader.", e);
       }
     }
   }

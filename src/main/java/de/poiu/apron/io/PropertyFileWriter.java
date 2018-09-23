@@ -31,9 +31,8 @@ import static java.nio.charset.StandardCharsets.UTF_16;
 import static java.nio.charset.StandardCharsets.UTF_16BE;
 import static java.nio.charset.StandardCharsets.UTF_16LE;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -45,7 +44,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class PropertyFileWriter implements Closeable {
 
-  private static final Logger LOGGER= LogManager.getLogger();
+  private static final Logger LOGGER= Logger.getLogger(PropertyFileWriter.class.getName());
 
 
   /////////////////////////////////////////////////////////////////////////////
@@ -157,7 +156,7 @@ public class PropertyFileWriter implements Closeable {
       try {
         this.writer.close();
       } catch (IOException e) {
-        LOGGER.log(Level.WARN, "Error closing writer.", e);
+        LOGGER.log(Level.WARNING, "Error closing writer.", e);
       }
     }
   }

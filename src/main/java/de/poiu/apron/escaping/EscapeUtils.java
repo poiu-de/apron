@@ -15,9 +15,8 @@
  */
 package de.poiu.apron.escaping;
 
-import org.apache.logging.log4j.Level;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 
 /**
@@ -27,7 +26,7 @@ import org.apache.logging.log4j.Logger;
  */
 public class EscapeUtils {
 
-  private static final Logger LOGGER= LogManager.getLogger();
+  private static final Logger LOGGER= Logger.getLogger(EscapeUtils.class.getName());
 
   /** The valid hex digits. Used for un-/escaping of unicode characters */
   private static final char[] HEX_DIGITS= {'0', '1', '2', '3', '4', '5', '6', '7', '8', '9'
@@ -153,12 +152,12 @@ public class EscapeUtils {
               // if the character cannot be translated, leave the escape sequence as it is,
               // but log an error.
               sb.append(c);
-              LOGGER.log(Level.ERROR, "Found invalid unicode escape sequence "+s.subSequence(i, i + 6)+". No conversion will be done. Be aware that this file cannot be read by java.util.Properties! The escape sequence should be fixed!");
+              LOGGER.log(Level.SEVERE, "Found invalid unicode escape sequence {0}. No conversion will be done. Be aware that this file cannot be read by java.util.Properties! The escape sequence should be fixed!", s.subSequence(i, i + 6));
             }
           } else {
             //…otherwise just leave it as it is
             sb.append(c);
-            LOGGER.log(Level.ERROR, "Found invalid unicode escape sequence "+s.subSequence(i, i + s.length() - i)+". No conversion will be done. Be aware that this file cannot be read by java.util.Properties! The escape sequence should be fixed!");
+            LOGGER.log(Level.SEVERE, "Found invalid unicode escape sequence {0}. No conversion will be done. Be aware that this file cannot be read by java.util.Properties! The escape sequence should be fixed!", s.subSequence(i, i + s.length() - i));
           }
         }
 
@@ -226,12 +225,12 @@ public class EscapeUtils {
               // if the character cannot be translated, leave the escape sequence as it is,
               // but log an error.
               sb.append(c);
-              LOGGER.log(Level.ERROR, "Found invalid unicode escape sequence "+s.subSequence(i, i + 6)+". No conversion will be done. Be aware that this file cannot be read by java.util.Properties! The escape sequence should be fixed!");
+              LOGGER.log(Level.SEVERE, "Found invalid unicode escape sequence {0}. No conversion will be done. Be aware that this file cannot be read by java.util.Properties! The escape sequence should be fixed!", s.subSequence(i, i + 6));
             }
           } else {
             //…otherwise just leave it as it is
             sb.append(c);
-            LOGGER.log(Level.ERROR, "Found invalid unicode escape sequence "+s.subSequence(i, i + s.length() - i)+". No conversion will be done. Be aware that this file cannot be read by java.util.Properties! The escape sequence should be fixed!");
+            LOGGER.log(Level.SEVERE, "Found invalid unicode escape sequence {0}. No conversion will be done. Be aware that this file cannot be read by java.util.Properties! The escape sequence should be fixed!", s.subSequence(i, i + s.length() - i));
           }
         } else {
           // if this backslash is not part of unicode escape, just leave it as it is
