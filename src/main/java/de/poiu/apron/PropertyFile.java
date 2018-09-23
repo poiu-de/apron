@@ -102,13 +102,7 @@ public class PropertyFile {
    * @return a map with the key-value-pairs of this PropertyFile
    */
   public Map<String, String> toMap() {
-    final Map<String, String> map= new LinkedHashMap<>();
-
-    this.propertyEntries.entrySet().forEach((e) -> {
-      map.put(e.getKey(), e.getValue().getValue().toString());
-    });
-
-    return map;
+    return this.toMap(new LinkedHashMap<>(this.propertiesSize()));
   }
 
 
@@ -122,7 +116,8 @@ public class PropertyFile {
    */
   public Map<String, String> toMap(final Map<String, String> map) {
     this.propertyEntries.entrySet().forEach((e) -> {
-      map.put(e.getKey(), e.getValue().getValue().toString());
+      final String unescapedValue= EscapeUtils.unescape(e.getValue().getValue()).toString();
+      map.put(e.getKey(), unescapedValue);
     });
 
     return map;

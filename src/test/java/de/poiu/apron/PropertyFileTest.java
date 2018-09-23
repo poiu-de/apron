@@ -1255,7 +1255,6 @@ public class PropertyFileTest {
 
     // - validation
     final String newFileContent= toString(propertyFile);
-    System.out.println(newFileContent);
     assertThat(newFileContent).isEqualTo(""
       + "keyA1 =  NEW valueA1\n"
       + "keyA2 = value A2 \\\n"
@@ -1315,7 +1314,6 @@ public class PropertyFileTest {
 
     // - validation
     final String newFileContent= toString(propertyFile);
-    System.out.println(newFileContent);
     assertThat(newFileContent).isEqualTo(""
       + "keyA1 =  NEW valueA1\n"
       + "#keyA2 = value A2 \\\n"
@@ -1566,6 +1564,32 @@ public class PropertyFileTest {
         + "          lines", "\n"),
       new BasicEntry(" # comment line to be removed \n"),
       new PropertyEntry("", "keyA3", " : ", "value A3", "\n"));
+  }
+
+
+  @Test
+  public void testToMap(){
+    //the map needs to contain the _unescaped_ keys and values
+    // - preparation
+    final File propertyFile= this.createTestFile(""
+      + " # comment line \n"
+      + "keyA1 =  valueA1\n"
+      + " \t\n"
+      + "key編 = valueЯ \\\n"
+      + "          over multiple \\\n"
+      + "          lines\n"
+      + "otherKey\\u7de8 = otherValue\\u042f\n"
+    );
+    final PropertyFile readPropertyFile= PropertyFile.from(propertyFile);
+
+    // - execution
+    final Map<String, String> propertyMap= readPropertyFile.toMap();
+
+    // - verification
+    assertThat(propertyMap).hasSize(3);
+    assertThat(propertyMap).containsEntry("keyA1", "valueA1");
+    assertThat(propertyMap).containsEntry("key編", "valueЯ over multiple lines");
+    assertThat(propertyMap).containsEntry("otherKey編", "otherValueЯ");
   }
 
 
