@@ -26,6 +26,12 @@ import java.util.Objects;
  * Be aware that not all combinations of options make sense in all cases. For example a
  * MissingKeyAction is not useful when {@link PropertyFile#overwrite(java.io.File, de.poiu.apron.Options) overwriting}
  * a file. In these cases those options are ignored.
+ * <p>
+ * By default this class provides the following values:
+ * <ul>
+ *  <li>UTF-8 encoding to read and write .properties files with UTF-8 encoding</li>
+ *  <li>MissingKeyAction.NOTHING to leave removed key-value-pairs intact when updating .properties files</li>
+ * </ul>
  *
  * @author mherrn
  */

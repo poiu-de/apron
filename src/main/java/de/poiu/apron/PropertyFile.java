@@ -448,21 +448,26 @@ public class PropertyFile {
   /**
    * Returns all entries in this PropertyFile in the correct order.
    * <p>
-   * The returned collection is an unmodifiable snapshot of the current entries.
+   * The returned list is the actual list of this PropertyFile. Changes to this PropertyFile are
+   * therefore reflected in the returned list and changes to the returned list are reflected in
+   * this PropertyFile.
+   * <p>
+   * Pay special attention to the fact that PropertyFile is not thread safe and the returned list
+   * isn't also. Be sure to not modify or iterate over the returned list in one and accessing this
+   * PropertyFile in another thread without synchronization.
    *
    * @return all entries in this PropertyFile
    */
-  //FIXME: This is not clean. The returned list may be unmodifiable, but the contained entries
-  //       are modifiable!
-  //       This method should therefore remain package private
-  List<Entry> getAllEntries() {
-    return Collections.unmodifiableList(this.entries);
+  public List<Entry> getAllEntries() {
+    return this.entries;
   }
 
 
   /**
-   * This method does exactly the same as {@link #saveTo(java.io.File, java.nio.charset.Charset) }
-   * but writes the file with UTF-8 encoding.
+   * This method does exactly the same as {@link #saveTo(java.io.File, de.poiu.apron.Options) }
+   * using default options.
+   * <p>
+   * See {@link Options} for a desciption of the default values.
    *
    * @param file the file to write to
    * @see #update(java.io.File)
@@ -515,8 +520,8 @@ public class PropertyFile {
    *
    * @param file the file to write to
    * @param options Options to respect when writing the .properties file
-   * @see #update(java.io.File, java.nio.charset.Charset)
-   * @see #overwrite(java.io.File, java.nio.charset.Charset)
+   * @see #update(java.io.File, de.poiu.apron.Options)
+   * @see #overwrite(java.io.File, de.poiu.apron.Options)
    */
   public void saveTo(final File file, final Options options) {
     if (file.exists()) {
@@ -532,7 +537,10 @@ public class PropertyFile {
   /**
    * Saves the entries in this PropertyFile to the given OutputStream.
    * <p>
-   * This method actually only delegates to {@link #overwrite(java.io.OutputStream, java.nio.charset.Charset) }.
+   * This method actually only delegates to {@link #overwrite(java.io.OutputStream, de.poiu.apron.Options) }
+   * using default options.
+   * <p>
+   * See {@link Options} for a desciption of the default values.
    *
    * @param outputStream the OutputStream to write to
    * @see #overwrite(java.io.OutputStream)
@@ -545,11 +553,14 @@ public class PropertyFile {
   /**
    * Saves the entries in this PropertyFile to the given OutputStream.
    * <p>
-   * This method actually only delegates to {@link #overwrite(java.io.OutputStream, java.nio.charset.Charset) }.
+   * This method actually only delegates to {@link #overwrite(java.io.OutputStream, de.poiu.apron.Options) }
+   * using default options.
+   * <p>
+   * See {@link Options} for a desciption of the default values.
    *
    * @param outputStream the OutputStream to write to
    * @param options Options to respect when writing the .properties file
-   * @see #overwrite(java.io.OutputStream, java.nio.charset.Charset)
+   * @see #overwrite(java.io.OutputStream, de.poiu.apron.Options)
    */
   public void saveTo(final OutputStream outputStream, final Options options) {
     this.overwrite(outputStream, options);
@@ -557,8 +568,10 @@ public class PropertyFile {
 
 
   /**
-   * This method does exactly the same as {@link #update(java.io.File, java.nio.charset.Charset) },
-   * but writes the file with UTF-8 encoding.
+   * This method does exactly the same as {@link #update(java.io.File, de.poiu.apron.Options) }
+   * using default options.
+   * <p>
+   * See {@link Options} for a desciption of the default values.
    *
    * @param file the file to update
    * @see #saveTo(java.io.File)
@@ -581,8 +594,8 @@ public class PropertyFile {
    *
    * @param file the file to update
    * @param options Options to respect when writing the .properties file
-   * @see #saveTo(java.io.File, java.nio.charset.Charset)
-   * @see #overwrite(java.io.File, java.nio.charset.Charset)
+   * @see #saveTo(java.io.File, de.poiu.apron.Options)
+   * @see #overwrite(java.io.File, de.poiu.apron.Options)
    */
   public void update(final File file, final Options options) {
     // first update the values of the key-value-pairs
@@ -634,8 +647,10 @@ public class PropertyFile {
 
 
   /**
-   * This method does exactly the same as {@link #overwrite(java.io.File, java.nio.charset.Charset) },
-   * but writes the file with UTF-8 encoding.
+   * This method does exactly the same as {@link #overwrite(java.io.File, de.poiu.apron.Options) }
+   * using default options.
+   * <p>
+   * See {@link Options} for a desciption of the default values.
    *
    * @param file the file to write to
    * @see #saveTo(java.io.File)
@@ -647,8 +662,10 @@ public class PropertyFile {
 
 
   /**
-   * This method does exactly the same as {@link #overwrite(java.io.OutputStream, java.nio.charset.Charset) },
-   * but writes to the stream with UTF-8 encoding.
+   * This method does exactly the same as {@link #overwrite(java.io.OutputStream, de.poiu.apron.Options) }
+   * using default options.
+   * <p>
+   * See {@link Options} for a desciption of the default values.
    *
    * @param outputStream the OutputStream to write to
    * @see #saveTo(java.io.OutputStream)
@@ -692,7 +709,7 @@ public class PropertyFile {
    *
    * @param outputStream the OutputStream to write to
    * @param options Options to respect when writing the .properties file
-   * @see #saveTo(java.io.OutputStream, java.nio.charset.Charset)
+   * @see #saveTo(java.io.OutputStream, de.poiu.apron.Options)
    */
   public void overwrite(final OutputStream outputStream, final Options options) {
     try(final PropertyFileWriter writer= new PropertyFileWriter(outputStream, options.getCharset())) {
