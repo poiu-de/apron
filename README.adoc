@@ -5,8 +5,12 @@ Marco Herrn <marco@mherrn.de>
 :toc:
 :homepage: https://github.com/hupfdule/apron
 :download-page: https://github.com/hupfdule/apron/releases
+:javadoc-url: https://javadoc.io/de.poiu.apron/apron/
 :license-link: https://github.com/hupfdule/apron/blob/master/LICENSE-2.0.html
 :kilt-homepage: https://github.com/hupfdule/kilt
+:log4j2-jul-bridge: https://logging.apache.org/log4j/2.x/log4j-jul/index.html
+:slf4j-jul-bridge: https://www.slf4j.org/legacy.html#jul-to-slf4j
+:source-highlighter: prettify
 :apron-version: 1.0.0
 
 [.float-group]
@@ -25,7 +29,7 @@ Apron is a small library for reading and writing Java .properties files.
 The main goal of this library is to be compatible with the
 `java.util.Properties` class. Not API-wise (the API is quite different),
 but being able to read every Java .properties file and getting exactly the
-same key-value-pairs as `java.util.Properties` does.
+same key-value pairs as `java.util.Properties` does.
 
 However Apron maintains the order of the entries in the properties files
 and also the comments, blank lines and whitespace before keys and around
@@ -51,11 +55,14 @@ Installation
 
 To use Apron in a maven based project use the following maven coordinates:
 
+[source,xml,subs="verbatim,attributes"]
+----
     <dependency>
       <groupId>de.poiu.apron</groupId>
       <artifactId>apron</artifactId>
       <version>{apron-version}</version>
     <dependency>
+----
 
 Otherwise download the jar-file of Apron from the {download-page}[Download
 page] and put it into the classpath of your application.
@@ -66,11 +73,153 @@ Usage
 
 // TODO: Da muss dann was geschrieben werden
 
+// PropertyFile / Entries
+// Options
+// How to create PropertyFile
+// read from
+// write to (save/update/overwrite)
 
-Known Bugs
-----------
+The main important class in Apron is `de.poiu.apron.PropertyFile`.
+It provides methods to create a new instance by reading a .properties file
+from File or InputStream as well as methods for populating an instance
+programmatically.
 
-// TODO: Die auskommentierten Testfälle
+The main difference to the usual `java.util.Properties` is that this class
+does not implement the `java.util.Map` interface and provides access to the
+content of the PropertyFile in two different ways:
+
+ - as key-value pairs
+ - as Entries
+
+The key-value pairs are the actual interesting content of the .properties
+files and are the same as when read via `java.util.Properties`. However,
+since PropertyFile is able to retain all comments, blank lines and even the
+formatting of the file it stores all this information in objects of type
+`Entry`. There are two implementations of `Entry`:
+
+ BasicEntry::
+    A non-key-value pair like a comment or an empty line
+ PropertyEntry::
+    An actual key-value pair
+
+The Entry objects store their content in _escaped_ form. That means all
+whitespaces, linebreaks, escape characters, etc. are contained in exactly
+the same form as in the written .properties file.
+
+The key-value pairs instead contain the content in _unescaped_ form (as you
+would expect from `java.util.Properties`).
+
+To minimize confusion the _escaped_ values are stored as CharSequence
+whereas the _unescaped_ values are stored as String.
+
+A PropertyFile instance also allows writing its content back to disk. It
+provides 3 methods (each in two variants) for doing so:
+
+ overwrite::
+    Writes the contents of the PropertyFile to a new file or overwrite an
+    existing file.
+ update::
+    Update an existing .properties file with the values in the written
+    PropertyFile.
+ save::
+    Use either the above mentioned overwrite method if the given file does 
+    not exist or the update method if the file already exists.
+
+The most interesting method is the `update` method, since this
+differentiates PropertyFile from `java.util.Properties`. It actually only
+updates the values of the key-value pairs without touching any other
+formatting. Blank lines, comments, whitespaces and even escaping and
+special formatting of the keys are not altered at all. Also the order of
+the key-value pairs remains the same.
+
+The behaviour when writing a PropertyFile can be altered by providing it an
+optional `Options` object.
+
+This is an example for using a PropertyFile:
+
+[source,java]
+----
+// Read the file "application.properties" into a PropertyFile
+final PropertyFile propertyFile= PropertyFile.from(
+  new File("application.properties"));
+
+// Read the value of the key "someKey"
+final String someValue= propertyFile.get("someKey");
+
+// Read all Entries (that means BasicEntries as well as PropertyEntries)
+final List<Entry> entries= propertyFile.getAllEntries();
+
+// Set the value of "someKey" to a new value
+propertyFile.set("someKey", "aNewValue");
+
+// Add a comment line to this PropertyFile
+propertyFile.appendEntry(new BasicEntry("# A new key-value pair follows");
+
+// Add a new key-value pair to this PropertyFile
+// Be aware that by using appendEntry() it could be possible to insert
+// duplicate keys into this PropertyFile. The behaviour is then undefined.
+// It is the responsibility of the user of PropertyFile to avoid this
+// PropertyEntries contain their content in _escaped_ form. Therefore the
+// Backslashes and newline character are not really part of the key and value
+propertyFile.appendEntry(new PropertyEntry("a new \\\nkey", "a new \\\nvalue");
+
+
+// key-value pairs a _unescaped_. Therefore the following method call
+// will return the string "a new value"
+final String myNewValue= propertyFile.get("a new key");
+
+// Specify an Options object that requires writing in UTF-8.
+// This is actually not necessary since UTF-8 is the default.
+final Options apronOptions= Options.create().with(UTF_8);
+
+// Write the PropertyFile back to file by only updating the modified values
+propertyFile.update(new File("application.properties"), apronOptions);
+----
+
+See the {javadoc-url}[Javadoc API] for more details.
+
+
+Logging
+-------
+
+There are a few cases this library issues some logging statements (when
+closing a writer didn't succeed and if an invalid unicode sequence was
+found that will be left as is). 
+Those few logging statements don't justify a dependency on a logging
+framework. Therefore we just use java.util.logging for that purpose.
+
+When using Apron in an application that uses another logging framework
+please use those logging frameworks ability to bridge java.util.logging to
+their actual implementation.
+
+For log4j2 this can be done by including the `log4j2-jul` and `log4j2-api` jar
+(and some implemention, e.g. `log4j2-core`) and setting the system property
+`java.util.logging.LogManager` to `org.apache.logging.log4j.jul.LogManager`. 
+See {log4j2-jul-bridge} for more information.
+
+For slf4j this can be done by including the `jul-to-slf4j` jar (and some
+implementation, e.g. `logback`) and programmatically calling 
+
+[source,java]
+----
+SLF4JBridgeHandler.removeHandlersForRootLogger();
+SLF4JBridgeHandler.install();
+----
+
+or setting the handler in the `logging.properties`:
+
+[source,xml]
+----
+handlers = org.slf4j.bridge.SLF4JBridgeHandler
+----
+
+See {slf4j-jul-bridge} for more information.
+
+
+// There are no known bugs at the moment
+//Known Bugs
+//----------
+
 
 
 License
