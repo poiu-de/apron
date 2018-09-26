@@ -3,7 +3,7 @@
 
   <groupId>de.poiu.apron</groupId>
   <artifactId>apron</artifactId>
-  <version>1.0.0</version>
+  <version>1.0.1-SNAPSHOT</version>
   <name>apron</name>
   <description>Advanced Properties — Read and write Java .properties files in a more sane manner.</description>
   <url>https://github.com/hupfdule/apron</url>
@@ -19,7 +19,7 @@
     <url>https://github.com/hupfdule/apron</url>
     <connection>scm:git:git://github.com/hupfdule/apron.git</connection>
     <developerConnection>scm:git:git@github.com:hupfdule/apron.git</developerConnection>
-    <tag>apron-1.0.0</tag>
+    <tag>HEAD</tag>
   </scm>
 
   <issueManagement>
