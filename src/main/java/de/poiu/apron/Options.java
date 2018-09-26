@@ -33,13 +33,66 @@ import java.util.Objects;
  *  <li>MissingKeyAction.NOTHING to leave removed key-value-pairs intact when updating .properties files</li>
  * </ul>
  *
+ * This class is immutable and therefore thread safe. All modification methods actually return a new object.
+ *
  * @author mherrn
  */
 public class Options {
-  private Charset charset= UTF_8;
-  private MissingKeyAction missingKeyAction= MissingKeyAction.NOTHING;
+
+  /////////////////////////////////////////////////////////////////////////////
+  //
+  // Attributes
+
+  /** The Charset to use for writing a PropertyFile. */
+  private final Charset charset;
+
+  /**
+   * The MissingKeyAction to apply when the updated target .properties file
+   * contains key-value pairs that do not exist in the written PropertyFile.
+   */
+  private final MissingKeyAction missingKeyAction;
 
 
+  /////////////////////////////////////////////////////////////////////////////
+  //
+  // Constructors
+
+  /**
+   * Creates a new Options object with the default values.
+   * <p>
+   * This is exactly the as if calling the static {@link #create() } method.
+   */
+  public Options() {
+    this(UTF_8, MissingKeyAction.NOTHING);
+  }
+
+
+  /**
+   * Creates a new Options object with the given values.
+   * <p>
+   * While this constructor is public and is absolutely safe to use, in most cases it is
+   * more convenient to use the provided fluent interface, e.g.
+   *
+   * <pre>
+   * final Options options= Options.create()
+   *                               .with(StandardCharsets.ISO_8859_1)
+   *                               .with(MissingKeyAction.DELETE);
+   * </pre>
+   * @param charset the Charset to use for writing a PropertyFile
+   * @param missingKeyAction the MissingKeyAction to apply when the updated target .properties file
+   *                          contains key-value pairs that do not exist in the written PropertyFile
+   */
+  public Options(final Charset charset, final MissingKeyAction missingKeyAction) {
+    Objects.requireNonNull(charset);
+    Objects.requireNonNull(missingKeyAction);
+    this.charset= charset;
+    this.missingKeyAction= missingKeyAction;
+  }
+
+
+  /////////////////////////////////////////////////////////////////////////////
+  //
+  // Methods
 
   /**
    * Creates a new Options object with the default values.
@@ -51,20 +104,32 @@ public class Options {
 
 
   /**
-   * Returns this Options object, but set the the charset option to the given value.
+   * Creates a new Options object as a copy of the given one.
+   *
+   * @param options the Options to copy
+   * @return a new Options object with the same values as the given one
+   */
+  //FIXME: Do we need this? There is no difference between these objects then and they are immutable
+  public static Options of(final Options options) {
+    return new Options()
+      .with(options.charset)
+      .with(options.missingKeyAction);
+  }
+
+
+  /**
+   * Returns a copy of this Options object, but with the given charset.
    *
    * @param charset the Charset to use when writing the PropertyFile.
    * @return this Options object
    */
   public Options with(final Charset charset) {
-    Objects.requireNonNull(charset);
-    this.charset= charset;
-    return this;
+    return new Options(charset, this.missingKeyAction);
   }
 
 
   /**
-   * Returns this Options object, but set the the MissingKeyAction option to the given value.
+   * Returns a copy of this Options object, but with the given MissingKeyAction.
    * <p>
    * This is only meaningful on updating a File. When writing to an output stream or overwriting a
    * file or creating a new file, this options does nothing.
@@ -73,9 +138,7 @@ public class Options {
    * @return this Options object
    */
   public Options with(final MissingKeyAction missingKeyAction) {
-    Objects.requireNonNull(missingKeyAction);
-    this.missingKeyAction= missingKeyAction;
-    return this;
+    return new Options(this.charset, missingKeyAction);
   }
 
 
@@ -98,4 +161,36 @@ public class Options {
   public MissingKeyAction getMissingKeyAction() {
     return missingKeyAction;
   }
+
+
+  @Override
+  public boolean equals(final Object o) {
+    if (o == this) {
+      return true;
+    }
+    if (o instanceof Options) {
+      final Options that = (Options) o;
+      return (this.charset.equals(that.getCharset()))
+           && (this.missingKeyAction.equals(that.getMissingKeyAction()));
+    }
+    return false;
+  }
+
+
+  @Override
+  public int hashCode() {
+    int h$ = 1;
+    h$ *= 1000003;
+    h$ ^= charset.hashCode();
+    h$ *= 1000003;
+    h$ ^= missingKeyAction.hashCode();
+    return h$;
+  }
+
+
+  @Override
+  public String toString() {
+    return "Options{" + "charset=" + charset + ", missingKeyAction=" + missingKeyAction + '}';
+  }
+
 }
