@@ -5,7 +5,7 @@ Marco Herrn <marco@mherrn.de>
 :toc:
 :homepage: https://github.com/hupfdule/apron
 :download-page: https://github.com/hupfdule/apron/releases
-:javadoc-url: https://javadoc.io/de.poiu.apron/apron/
+:javadoc-url: https://javadoc.io/doc/de.poiu.apron/apron/
 :license-link: https://github.com/hupfdule/apron/blob/master/LICENSE-2.0.html
 :kilt-homepage: https://github.com/hupfdule/kilt
 :log4j2-jul-bridge: https://logging.apache.org/log4j/2.x/log4j-jul/index.html
