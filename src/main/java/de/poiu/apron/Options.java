@@ -29,12 +29,12 @@ import java.util.Objects;
  * <p>
  * By default this class provides the following values:
  * <ul>
- *  <li>UTF-8 encoding to read and write .properties files with UTF-8 encoding</li>
- *  <li>MissingKeyAction.NOTHING to leave removed key-value-pairs intact when updating .properties files</li>
- *  <li>UnicodeHandling.DO_NOTHING to not change the original unicode value (unless writing in a
+ *  <li><code>UTF-8</code> encoding to read and write .properties files with UTF-8 encoding</li>
+ *  <li><code>MissingKeyAction.NOTHING</code> to leave removed key-value-pairs intact when updating .properties files</li>
+ *  <li><code>UnicodeHandling.DO_NOTHING</code> to not change the original unicode value (unless writing in a
  *     non-UTF charset in which case Unicode characters are always written as Unicode escape sequences)</li>
  * </ul>
- *
+ * <p>
  * This class is immutable and therefore thread safe. All modification methods actually return a new object.
  *
  * @author mherrn

@@ -27,6 +27,7 @@ import java.util.Objects;
  *  <li>the separator (with optional surrounding whitespace)</li>
  *  <li>and the line ending character</li>
  * </ul>
+ * <p>
  * of the entry. This allows writing this entry back to file in exactly the same form as it was
  * written, retaining all the formattings.
  *

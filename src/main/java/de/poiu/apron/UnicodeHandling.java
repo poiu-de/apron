@@ -26,7 +26,7 @@ package de.poiu.apron;
  */
 public enum UnicodeHandling {
   /**
-   * Leave existing strings as they are; write new strings according to the given charset.
+   * Leave existing strings as they are; write new strings according to the given charset (the default).
    * This does only work with UTF encodings.
    */
   DO_NOTHING,
