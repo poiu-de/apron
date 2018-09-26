@@ -15,6 +15,8 @@
  */
 package de.poiu.apron.io;
 
+import de.poiu.apron.Options;
+import de.poiu.apron.UnicodeHandling;
 import de.poiu.apron.entry.BasicEntry;
 import de.poiu.apron.entry.Entry;
 import de.poiu.apron.entry.PropertyEntry;
@@ -23,6 +25,8 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import static java.nio.charset.StandardCharsets.ISO_8859_1;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import org.junit.Test;
 
@@ -151,6 +155,211 @@ public class PropertyFileWriterTest {
         + "\n"
         + "keyA1\\ \\\n\tover\\ multiple\\ lines = valueA1 \r\tover multiple lines\n"
         + " keyA2:valueA2\n"
+    );
+  }
+
+
+  @Test
+  public void testWriteEntries_CharsetUTF8_UnicodeHandlingNOTHING() throws IOException {
+    // - preparation
+    final Entry[] entries= {
+      new PropertyEntry("keyA1","Sch\\u00fcssel\\u069a"),
+      new PropertyEntry("UTF-8-key-Äሴ", "UTF-8-value-編Я"),
+    };
+
+    final File file= this.createTestFile();
+
+    // - execution
+    try(final PropertyFileWriter propertyFileWriter= new PropertyFileWriter(file,
+      Options.create()
+        .with(UTF_8)
+        .with(UnicodeHandling.DO_NOTHING));) {
+      for (final Entry entry : entries) {
+        propertyFileWriter.writeEntry(entry);
+      }
+    }
+
+    // - verification
+    final String fileContent= toString(file);
+    assertThat(fileContent).isEqualTo(""
+        + "keyA1 = Sch\\u00fcssel\\u069a\n"
+        + "UTF-8-key-Äሴ = UTF-8-value-編Я\n"
+    );
+  }
+
+
+  @Test
+  public void testWriteEntries_CharsetUTF8_UnicodeHandlingBYCHARSET() throws IOException {
+    // - preparation
+    final Entry[] entries= {
+      new PropertyEntry("keyA1","Sch\\u00fcssel\\u069a"),
+      new PropertyEntry("UTF-8-key-Äሴ", "UTF-8-value-編Я"),
+    };
+
+    final File file= this.createTestFile();
+
+    // - execution
+    try(final PropertyFileWriter propertyFileWriter= new PropertyFileWriter(file,
+      Options.create()
+        .with(UTF_8)
+        .with(UnicodeHandling.BY_CHARSET));) {
+      for (final Entry entry : entries) {
+        propertyFileWriter.writeEntry(entry);
+      }
+    }
+
+    // - verification
+    final String fileContent= toString(file);
+    assertThat(fileContent).isEqualTo(""
+        + "keyA1 = Schüsselښ\n"
+        + "UTF-8-key-Äሴ = UTF-8-value-編Я\n"
+    );
+  }
+
+
+  @Test
+  public void testWriteEntries_CharsetUTF8_UnicodeHandlingUNICODE() throws IOException {
+    // - preparation
+    final Entry[] entries= {
+      new PropertyEntry("keyA1","Sch\\u00fcssel\\u069a"),
+      new PropertyEntry("UTF-8-key-Äሴ", "UTF-8-value-編Я"),
+    };
+
+    final File file= this.createTestFile();
+
+    // - execution
+    try(final PropertyFileWriter propertyFileWriter= new PropertyFileWriter(file,
+      Options.create()
+        .with(UTF_8)
+        .with(UnicodeHandling.UNICODE));) {
+      for (final Entry entry : entries) {
+        propertyFileWriter.writeEntry(entry);
+      }
+    }
+
+    // - verification
+    final String fileContent= toString(file);
+    assertThat(fileContent).isEqualTo(""
+        + "keyA1 = Schüsselښ\n"
+        + "UTF-8-key-Äሴ = UTF-8-value-編Я\n"
+    );
+  }
+
+
+  @Test
+  public void testWriteEntries_CharsetUTF8_UnicodeHandlingESCAPE() throws IOException {
+    // - preparation
+    final Entry[] entries= {
+      new PropertyEntry("keyA1","Sch\\u00fcssel\\u069a"),
+      new PropertyEntry("UTF-8-key-Äሴ", "UTF-8-value-編Я"),
+    };
+
+    final File file= this.createTestFile();
+
+    // - execution
+    try(final PropertyFileWriter propertyFileWriter= new PropertyFileWriter(file,
+      Options.create()
+        .with(UTF_8)
+        .with(UnicodeHandling.ESCAPE));) {
+      for (final Entry entry : entries) {
+        propertyFileWriter.writeEntry(entry);
+      }
+    }
+
+    // - verification
+    final String fileContent= toString(file);
+    assertThat(fileContent).isEqualTo(""
+        + "keyA1 = Sch\\u00fcssel\\u069a\n"
+        + "UTF-8-key-\\u00c4\\u1234 = UTF-8-value-\\u7de8\\u042f\n"
+    );
+  }
+
+
+  @Test
+  public void testWriteEntries_CharsetISO88591_UnicodeHandlingESCAPE() throws IOException {
+    // - preparation
+    final Entry[] entries= {
+      new PropertyEntry("keyA1","Sch\\u00fcssel\\u069a"),
+      new PropertyEntry("UTF-8-key-Äሴ", "UTF-8-value-編Я"),
+    };
+
+    final File file= this.createTestFile();
+
+    // - execution
+    try(final PropertyFileWriter propertyFileWriter= new PropertyFileWriter(file,
+      Options.create()
+        .with(ISO_8859_1)
+        .with(UnicodeHandling.ESCAPE));) {
+      for (final Entry entry : entries) {
+        propertyFileWriter.writeEntry(entry);
+      }
+    }
+
+    // - verification
+    final String fileContent= toString(file);
+    assertThat(fileContent).isEqualTo(""
+        + "keyA1 = Sch\\u00fcssel\\u069a\n"
+        + "UTF-8-key-\\u00c4\\u1234 = UTF-8-value-\\u7de8\\u042f\n"
+    );
+  }
+
+
+  @Test
+  public void testWriteEntries_CharsetISO88591_UnicodeHandlingUNICODE() throws IOException {
+    // UnicodeHandling needs to be ignored, since ISO-8859-1 does not allow unicode values
+    // - preparation
+    final Entry[] entries= {
+      new PropertyEntry("keyA1","Sch\\u00fcssel\\u069a"),
+      new PropertyEntry("UTF-8-key-Äሴ", "UTF-8-value-編Я"),
+    };
+
+    final File file= this.createTestFile();
+
+    // - execution
+    try(final PropertyFileWriter propertyFileWriter= new PropertyFileWriter(file,
+      Options.create()
+        .with(ISO_8859_1)
+        .with(UnicodeHandling.ESCAPE));) {
+      for (final Entry entry : entries) {
+        propertyFileWriter.writeEntry(entry);
+      }
+    }
+
+    // - verification
+    final String fileContent= toString(file);
+    assertThat(fileContent).isEqualTo(""
+        + "keyA1 = Sch\\u00fcssel\\u069a\n"
+        + "UTF-8-key-\\u00c4\\u1234 = UTF-8-value-\\u7de8\\u042f\n"
+    );
+  }
+
+
+  @Test
+  public void testWriteEntries_CharsetISO88591_UnicodeHandlingNOTHING() throws IOException {
+    // UnicodeHandling needs to be ignored, since ISO-8859-1 does not allow unicode values
+    // - preparation
+    final Entry[] entries= {
+      new PropertyEntry("keyA1","Sch\\u00fcssel\\u069a"),
+      new PropertyEntry("UTF-8-key-Äሴ", "UTF-8-value-編Я"),
+    };
+
+    final File file= this.createTestFile();
+
+    // - execution
+    try(final PropertyFileWriter propertyFileWriter= new PropertyFileWriter(file,
+      Options.create()
+        .with(ISO_8859_1)
+        .with(UnicodeHandling.DO_NOTHING));) {
+      for (final Entry entry : entries) {
+        propertyFileWriter.writeEntry(entry);
+      }
+    }
+
+    // - verification
+    final String fileContent= toString(file);
+    assertThat(fileContent).isEqualTo(""
+        + "keyA1 = Sch\\u00fcssel\\u069a\n"
+        + "UTF-8-key-\\u00c4\\u1234 = UTF-8-value-\\u7de8\\u042f\n"
     );
   }
 

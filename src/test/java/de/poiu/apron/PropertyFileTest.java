@@ -966,7 +966,29 @@ public class PropertyFileTest {
 
 
   @Test
-  public void testWritePropertyFile_ISO88591_to_UTF8() throws IOException {
+  public void testUpdatePropertyFile_ISO88591_to_UTF8() throws IOException {
+    // - preparation
+    final File propertyFile= this.createTestFile(""
+        + "nextKey = Sch\\u00fcssel\\u069a"
+      , ISO_8859_1
+    );
+    final PropertyFile readPropertyFile= PropertyFile.from(propertyFile, ISO_8859_1);
+
+    // - execution
+    readPropertyFile.setValue("UTF-8-key-Äሴ", "UTF-8-value-編Я");
+    readPropertyFile.saveTo(propertyFile, Options.create().with(UTF_8));
+
+    // - validation
+    final String newFileContent= toString(propertyFile, UTF_8);
+    assertThat(newFileContent).isEqualTo(""
+        + "nextKey = Sch\\u00fcssel\\u069a\n" // escape sequences in original file remain as they are, unless the actual content has changed
+        + "UTF-8-key-Äሴ = UTF-8-value-編Я\n"
+    );
+  }
+
+
+  @Test
+  public void testOverwritePropertyFile_ISO88591_to_UTF8() throws IOException {
     // - preparation
     final File propertyFile= this.createTestFile(""
         + "nextKey = Sch\\u00fcssel\\u069a"
@@ -984,7 +1006,7 @@ public class PropertyFileTest {
     // - validation
     final String newFileContent= toString(targetFile, UTF_8);
     assertThat(newFileContent).isEqualTo(""
-        + "nextKey = Sch\\u00fcssel\\u069a\n" // escape sequences in original file remain as they are, unless the actual content has changed
+        + "nextKey = Schüsselښ\n" // escape sequences is written in target encoding, since we write to a new file (or request an overwrite)
         + "UTF-8-key-Äሴ = UTF-8-value-編Я\n"
     );
   }
@@ -1037,7 +1059,7 @@ public class PropertyFileTest {
 
 
   @Test
-  @Ignore("This is postponed for later. When doing PropertyFileWriter#writeEntry() we need to tell the writer to convert everything to UTF-8")
+//  @Ignore("This is postponed for later. When doing PropertyFileWriter#writeEntry() we need to tell the writer to convert everything to UTF-8")
   public void testWritePropertyFile_ISO88591_to_UTF8_toNewFile() throws IOException {
     // - preparation
     // all UTF-8 characters should be written as is, not as escape sequences

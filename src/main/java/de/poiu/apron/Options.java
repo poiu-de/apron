@@ -31,6 +31,8 @@ import java.util.Objects;
  * <ul>
  *  <li>UTF-8 encoding to read and write .properties files with UTF-8 encoding</li>
  *  <li>MissingKeyAction.NOTHING to leave removed key-value-pairs intact when updating .properties files</li>
+ *  <li>UnicodeHandling.DO_NOTHING to not change the original unicode value (unless writing in a
+ *     non-UTF charset in which case Unicode characters are always written as Unicode escape sequences)</li>
  * </ul>
  *
  * This class is immutable and therefore thread safe. All modification methods actually return a new object.
@@ -53,6 +55,13 @@ public class Options {
   private final MissingKeyAction missingKeyAction;
 
 
+  /**
+   * How to handle Unicode values when writing. This only applies when writing with
+   * a supported Unicode charset, since in all other cases Unicode values are always written
+   * as Unicode escape sequences.
+   */
+  private final UnicodeHandling unicodeHandling;
+
   /////////////////////////////////////////////////////////////////////////////
   //
   // Constructors
@@ -63,7 +72,7 @@ public class Options {
    * This is exactly the as if calling the static {@link #create() } method.
    */
   public Options() {
-    this(UTF_8, MissingKeyAction.NOTHING);
+    this(UTF_8, MissingKeyAction.NOTHING, UnicodeHandling.DO_NOTHING);
   }
 
 
@@ -81,12 +90,15 @@ public class Options {
    * @param charset the Charset to use for writing a PropertyFile
    * @param missingKeyAction the MissingKeyAction to apply when the updated target .properties file
    *                          contains key-value pairs that do not exist in the written PropertyFile
+   * @param unicodeHandling how to handle Unicode values when writing.
    */
-  public Options(final Charset charset, final MissingKeyAction missingKeyAction) {
+  public Options(final Charset charset, final MissingKeyAction missingKeyAction, final UnicodeHandling unicodeHandling) {
     Objects.requireNonNull(charset);
     Objects.requireNonNull(missingKeyAction);
+    Objects.requireNonNull(unicodeHandling);
     this.charset= charset;
     this.missingKeyAction= missingKeyAction;
+    this.unicodeHandling= unicodeHandling;
   }
 
 
@@ -104,27 +116,13 @@ public class Options {
 
 
   /**
-   * Creates a new Options object as a copy of the given one.
-   *
-   * @param options the Options to copy
-   * @return a new Options object with the same values as the given one
-   */
-  //FIXME: Do we need this? There is no difference between these objects then and they are immutable
-  public static Options of(final Options options) {
-    return new Options()
-      .with(options.charset)
-      .with(options.missingKeyAction);
-  }
-
-
-  /**
    * Returns a copy of this Options object, but with the given charset.
    *
    * @param charset the Charset to use when writing the PropertyFile.
    * @return this Options object
    */
   public Options with(final Charset charset) {
-    return new Options(charset, this.missingKeyAction);
+    return new Options(charset, this.missingKeyAction, this.unicodeHandling);
   }
 
 
@@ -138,7 +136,12 @@ public class Options {
    * @return this Options object
    */
   public Options with(final MissingKeyAction missingKeyAction) {
-    return new Options(this.charset, missingKeyAction);
+    return new Options(this.charset, missingKeyAction, this.unicodeHandling);
+  }
+
+
+  public Options with(final UnicodeHandling unicodeHandling) {
+    return new Options(this.charset, this.missingKeyAction, unicodeHandling);
   }
 
 
@@ -163,6 +166,11 @@ public class Options {
   }
 
 
+  public UnicodeHandling getUnicodeHandling() {
+    return unicodeHandling;
+  }
+
+
   @Override
   public boolean equals(final Object o) {
     if (o == this) {
@@ -170,8 +178,9 @@ public class Options {
     }
     if (o instanceof Options) {
       final Options that = (Options) o;
-      return (this.charset.equals(that.getCharset()))
-           && (this.missingKeyAction.equals(that.getMissingKeyAction()));
+      return this.charset.equals(that.getCharset())
+           && this.missingKeyAction.equals(that.getMissingKeyAction())
+           && this.unicodeHandling.equals(that.getUnicodeHandling());
     }
     return false;
   }
@@ -184,13 +193,15 @@ public class Options {
     h$ ^= charset.hashCode();
     h$ *= 1000003;
     h$ ^= missingKeyAction.hashCode();
+    h$ *= 1000003;
+    h$ ^= unicodeHandling.hashCode();
     return h$;
   }
 
 
   @Override
   public String toString() {
-    return "Options{" + "charset=" + charset + ", missingKeyAction=" + missingKeyAction + '}';
+    return "Options{" + "charset=" + charset + ", missingKeyAction=" + missingKeyAction + ", unicodeHandling=" + unicodeHandling + '}';
   }
 
 }

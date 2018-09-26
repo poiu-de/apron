@@ -642,7 +642,13 @@ public class PropertyFile {
     }
 
     // now write the modified PropertyFile to file
-    existing.overwrite(file);
+    try(final PropertyFileWriter writer= new PropertyFileWriter(file, options)) {
+      for (final Entry entry : existing.entries) {
+        writer.writeEntry(entry);
+      }
+    } catch (IOException ex) {
+      throw new RuntimeException("Error writing PropertyFile "+file.getAbsolutePath(), ex);
+    }
   }
 
 
@@ -690,7 +696,7 @@ public class PropertyFile {
   public void overwrite(final File file, final Options options) {
     this.createPathTo(file);
 
-    try(final PropertyFileWriter writer= new PropertyFileWriter(file, options.getCharset())) {
+    try(final PropertyFileWriter writer= new PropertyFileWriter(file, options.with(UnicodeHandling.BY_CHARSET))) {
       for (final Entry entry : this.entries) {
         writer.writeEntry(entry);
       }
@@ -712,7 +718,7 @@ public class PropertyFile {
    * @see #saveTo(java.io.OutputStream, de.poiu.apron.Options)
    */
   public void overwrite(final OutputStream outputStream, final Options options) {
-    try(final PropertyFileWriter writer= new PropertyFileWriter(outputStream, options.getCharset())) {
+    try(final PropertyFileWriter writer= new PropertyFileWriter(outputStream, options)) {
       for (final Entry entry : this.entries) {
         writer.writeEntry(entry);
       }

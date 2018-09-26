@@ -15,6 +15,8 @@
  */
 package de.poiu.apron.io;
 
+import de.poiu.apron.Options;
+import de.poiu.apron.UnicodeHandling;
 import de.poiu.apron.entry.Entry;
 import de.poiu.apron.escaping.EscapeUtils;
 import java.io.BufferedWriter;
@@ -54,8 +56,9 @@ public class PropertyFileWriter implements Closeable {
   /** The actual Writer doing the writing */
   private final BufferedWriter writer;
 
-  /** The charset to use for writing */
-  private final Charset charset;
+  /** The options to use for writing */
+  private final Options options;
+  
 
   /////////////////////////////////////////////////////////////////////////////
   //
@@ -70,7 +73,7 @@ public class PropertyFileWriter implements Closeable {
    * @throws FileNotFoundException if the file cannot be written
    */
   public PropertyFileWriter(final File propertyFile) throws FileNotFoundException {
-    this(propertyFile, Charset.forName("UTF-8"));
+    this(propertyFile, Options.create().with(Charset.forName("UTF-8")));
   }
 
 
@@ -78,13 +81,14 @@ public class PropertyFileWriter implements Closeable {
    * Creates a new PropertyFileWrite to write to the given file.
    *
    * @param propertyFile the file to write to
-   * @param charset the charset to use for writing
+   * @param options the options to use for writing
    * @throws FileNotFoundException if the file cannot be written
    */
-  public PropertyFileWriter(final File propertyFile, final Charset charset) throws FileNotFoundException {
-    this.writer= new BufferedWriter(new OutputStreamWriter(new FileOutputStream(propertyFile), charset));
-    this.charset= charset;
+  public PropertyFileWriter(final File propertyFile, final Options options) throws FileNotFoundException {
+    this.writer= new BufferedWriter(new OutputStreamWriter(new FileOutputStream(propertyFile), options.getCharset()));
+    this.options= options;
   }
+
 
   /**
    *
@@ -95,7 +99,7 @@ public class PropertyFileWriter implements Closeable {
   @Deprecated
   private PropertyFileWriter(final Writer writer) {
     this.writer= new BufferedWriter(writer);
-    this.charset= null;
+    this.options= null;
   }
 
 
@@ -107,7 +111,7 @@ public class PropertyFileWriter implements Closeable {
    * @param outputStream the OutputStream to write to
    */
   public PropertyFileWriter(final OutputStream outputStream) {
-    this(outputStream, Charset.forName("UTF-8"));
+    this(outputStream, Options.create().with(Charset.forName("UTF-8")));
   }
 
 
@@ -115,11 +119,11 @@ public class PropertyFileWriter implements Closeable {
    * Creates a new PropertyFileWrite to write to the given OutputStream.
    *
    * @param outputStream the OutputStream to write to
-   * @param charset the charset to use for writing
+   * @param options the options to use for writing
    */
-  public PropertyFileWriter(final OutputStream outputStream, final Charset charset) {
-    this.writer= new BufferedWriter(new OutputStreamWriter(outputStream, charset));
-    this.charset= charset;
+  public PropertyFileWriter(final OutputStream outputStream, final Options options) {
+    this.writer= new BufferedWriter(new OutputStreamWriter(outputStream, options.getCharset()));
+    this.options= options;
   }
 
 
@@ -134,15 +138,16 @@ public class PropertyFileWriter implements Closeable {
    * @throws IOException if the writing failed
    */
   public void writeEntry(final Entry entry) throws IOException {
-    //FIXME: UTF-32 is not in the required Charsets. Should we still support it?
-    if (charset != UTF_8
-      && charset != UTF_16
-      && charset != UTF_16LE
-      && charset != UTF_16BE
-      ) {
+    if (options.getUnicodeHandling() == UnicodeHandling.ESCAPE
+      || !useUTF()) {
       // if the encoding is not one of the supported Unicode encodings
       // escape all unicode values with \\uxxxx
       writer.append(EscapeUtils.escapeUnicode(entry.toCharSequence()));
+    } else if (options.getUnicodeHandling() == UnicodeHandling.UNICODE) {
+      writer.append(EscapeUtils.unescapeUnicode(entry.toCharSequence()));
+    } else if (options.getUnicodeHandling() == UnicodeHandling.BY_CHARSET
+      && useUTF()) {
+      writer.append(EscapeUtils.unescapeUnicode(entry.toCharSequence()));
     } else {
       // …otherwise write the content as is
       writer.append(entry.toCharSequence());
@@ -159,5 +164,19 @@ public class PropertyFileWriter implements Closeable {
         LOGGER.log(Level.WARNING, "Error closing writer.", e);
       }
     }
+  }
+
+
+  /**
+   * Checks if the requested charset is one of the supported Unicode encodings.
+   *
+   * @return whether the requested charset is one of the supported Unicode encodings
+   */
+  private boolean useUTF() {
+    //FIXME: UTF-32 is not in the required Charsets. Should we still support it?
+    return options.getCharset() == UTF_8
+      || options.getCharset() == UTF_16
+      || options.getCharset() == UTF_16LE
+      || options.getCharset() == UTF_16BE;
   }
 }
