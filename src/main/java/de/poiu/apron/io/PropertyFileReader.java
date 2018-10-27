@@ -388,7 +388,7 @@ public class PropertyFileReader implements Closeable {
       } else {
         // a non-escaped whitespace, equals-sign or colon means that we have reached the
         // separator and therefore can stop there
-        if (c == ' ' || c == '\t' || c == 'f' || c == '\n' || c == '\r' || c == '=' || c == ':') {
+        if (c == ' ' || c == '\t' || c == '\f' || c == '\n' || c == '\r' || c == '=' || c == ':') {
           if (startOfWhitespace != -1) {
             return logicalLine.subSequence(startAt, startOfWhitespace);
           } else {
