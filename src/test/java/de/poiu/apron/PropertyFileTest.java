@@ -28,16 +28,17 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.nio.charset.Charset;
-import static java.nio.charset.StandardCharsets.ISO_8859_1;
-import static java.nio.charset.StandardCharsets.UTF_8;
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import org.junit.Test;
+
+import static java.nio.charset.StandardCharsets.ISO_8859_1;
+import static java.nio.charset.StandardCharsets.UTF_8;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
-import org.junit.Ignore;
-import org.junit.Test;
 
 
 /**
@@ -1612,6 +1613,78 @@ public class PropertyFileTest {
     assertThat(propertyMap).containsEntry("keyA1", "valueA1");
     assertThat(propertyMap).containsEntry("key編", "valueЯ over multiple lines");
     assertThat(propertyMap).containsEntry("otherKey編", "otherValueЯ");
+  }
+
+
+  @Test
+  public void testClear() {
+    // - preparation
+    final File propertyFile= this.createTestFile(""
+      + " # comment line 1 \n"
+      + "keyA1 =  valueA1\n"
+      + " \t\n"
+      + " # comment line 2\n"
+      + "keyA2 = value A2\n"
+    );
+    final PropertyFile readPropertyFile= PropertyFile.from(propertyFile);
+
+    assertThat(readPropertyFile.getAllEntries()).containsExactly(
+      new BasicEntry(" # comment line 1 \n"),
+      new PropertyEntry("", "keyA1", " =  ", "valueA1", "\n"),
+      new BasicEntry(" \t\n"),
+      new BasicEntry(" # comment line 2\n"),
+      new PropertyEntry("", "keyA2", " = ", "value A2", "\n")
+    );
+
+    // - execution
+    readPropertyFile.clear();
+
+    // - verification
+    assertThat(readPropertyFile.getAllEntries()).isEmpty();
+    assertThat(readPropertyFile.toMap()).isEmpty();
+  }
+
+
+  @Test
+  public void testSetEntries() {
+    // - preparation
+    final File propertyFile= this.createTestFile(""
+      + " # comment line 1 \n"
+      + "keyA1 =  valueA1\n"
+      + " \t\n"
+      + " # comment line 2\n"
+      + "keyA2 = value A2\n"
+    );
+    final PropertyFile readPropertyFile= PropertyFile.from(propertyFile);
+
+    assertThat(readPropertyFile.getAllEntries()).containsExactly(
+      new BasicEntry(" # comment line 1 \n"),
+      new PropertyEntry("", "keyA1", " =  ", "valueA1", "\n"),
+      new BasicEntry(" \t\n"),
+      new BasicEntry(" # comment line 2\n"),
+      new PropertyEntry("", "keyA2", " = ", "value A2", "\n")
+    );
+
+
+    // - execution
+    final List<Entry> newEntries= Arrays.asList(
+      new PropertyEntry("some new property", "with a value"),
+      new BasicEntry("    "),
+      new PropertyEntry("oh", "my"),
+      new BasicEntry("# finish")
+    );
+    readPropertyFile.setEntries(newEntries);
+
+    // - verification
+    assertThat(readPropertyFile.getAllEntries()).containsExactly(
+      new PropertyEntry("some new property", "with a value"),
+      new BasicEntry("    "),
+      new PropertyEntry("oh", "my"),
+      new BasicEntry("# finish")
+    );
+    assertThat(readPropertyFile.toMap()).containsOnlyKeys("some new property", "oh");
+    assertThat(readPropertyFile.toMap().get("some new property")).isEqualTo("with a value");
+    assertThat(readPropertyFile.toMap().get("oh")).isEqualTo("my");
   }
 
 

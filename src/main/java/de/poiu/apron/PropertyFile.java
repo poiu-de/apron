@@ -265,6 +265,29 @@ public class PropertyFile {
 
 
   /**
+   * Removes all Entries from this PropertyFile.
+   */
+  public void clear() {
+    this.entries.clear();
+    this.propertyEntries.clear();
+  }
+
+
+  /**
+   * Sets the Entries for this PropertyFile.
+   * All existing entries will be dropped.
+   * @param entries
+   */
+  public void setEntries(final List<Entry> entries) {
+    this.entries.clear();
+    this.propertyEntries.clear();
+    entries.forEach((entry) -> {
+      this.appendEntry(entry);
+    });
+  }
+
+
+  /**
    * Returns a set with the keys of all PropertyEntries in this PropertyFile.
    * Thie returned set is only a snapshot of the current state and will not be updated if the contents of
    * this PropertyFile change. Also changes to the set are not reflected in this PropertyFile.
