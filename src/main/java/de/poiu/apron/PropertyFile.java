@@ -16,11 +16,11 @@
 package de.poiu.apron;
 
 import de.poiu.apron.entry.BasicEntry;
-import de.poiu.apron.entry.PropertyEntry;
 import de.poiu.apron.entry.Entry;
+import de.poiu.apron.entry.PropertyEntry;
+import de.poiu.apron.escaping.EscapeUtils;
 import de.poiu.apron.io.PropertyFileReader;
 import de.poiu.apron.io.PropertyFileWriter;
-import de.poiu.apron.escaping.EscapeUtils;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;

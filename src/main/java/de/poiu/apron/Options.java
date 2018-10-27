@@ -16,8 +16,9 @@
 package de.poiu.apron;
 
 import java.nio.charset.Charset;
-import static java.nio.charset.StandardCharsets.UTF_8;
 import java.util.Objects;
+
+import static java.nio.charset.StandardCharsets.UTF_8;
 
 
 /**

@@ -29,12 +29,13 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
 import static java.nio.charset.StandardCharsets.UTF_16;
 import static java.nio.charset.StandardCharsets.UTF_16BE;
 import static java.nio.charset.StandardCharsets.UTF_16LE;
 import static java.nio.charset.StandardCharsets.UTF_8;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 /**
@@ -58,7 +59,7 @@ public class PropertyFileWriter implements Closeable {
 
   /** The options to use for writing */
   private final Options options;
-  
+
 
   /////////////////////////////////////////////////////////////////////////////
   //
