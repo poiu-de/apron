@@ -350,6 +350,8 @@ public class PropertyFileReader implements Closeable {
     // Must be set to true at the start of each line and to false when the first non-whitespace
     // character was read
     boolean ignoreWhitespace= false;
+    // Remembers the start of the following whitespace that may or may not be part of a key
+    int startOfWhitespace= -1;
 
     for (int i= startAt; i < logicalLine.length(); i++) {
       final char c= logicalLine.charAt(i);
@@ -382,13 +384,19 @@ public class PropertyFileReader implements Closeable {
         }
 
         i++;
+        startOfWhitespace= i + 1;
       } else {
         // a non-escaped whitespace, equals-sign or colon means that we have reached the
         // separator and therefore can stop there
         if (c == ' ' || c == '\t' || c == 'f' || c == '\n' || c == '\r' || c == '=' || c == ':') {
-          return logicalLine.subSequence(startAt, i);
+          if (startOfWhitespace != -1) {
+            return logicalLine.subSequence(startAt, startOfWhitespace);
+          } else {
+            return logicalLine.subSequence(startAt, i);
+          }
         } else {
           ignoreWhitespace= false;
+          startOfWhitespace= -1;
         }
       }
     }

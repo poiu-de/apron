@@ -181,7 +181,7 @@ public class EscapeUtils {
         nonWhitespaceFound= false;
       } else if (c == '\r') {
         // remove all newline characters
-        if (i < s.length() && (char) s.charAt(i + 1) == '\n') {
+        if (i + 1 < s.length() && (char) s.charAt(i + 1) == '\n') {
           i++;
         }
         nonWhitespaceFound= false;

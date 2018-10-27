@@ -186,6 +186,7 @@ public class PropertyFileTest {
     }
   }
 
+
   @Test
   public void test_Commentlines() throws IOException {
     // - preparation
@@ -727,6 +728,56 @@ public class PropertyFileTest {
       assertThat(readPropertyFile.containsKey(key)).as("propertyFile contains key %s", key).isTrue();
       assertThat(readPropertyFile.get(key)).as("key %s contains value %s", key, value).isEqualTo(value);
     }
+  }
+
+
+  @Test
+  public void test_Multiline_SeparatorOnNewLine() throws IOException {
+    // - preparation
+    final File propertyFile= this.createTestFile(""
+      + "\tkey\\ \\\n"
+      + "  one\\\n"
+      + "  : value \\\n"
+      + "    1\n"
+      + "key\\ \\\n"
+      + "  two\\\r"
+      + "  = \t value \\\r"
+      + "    2\n"
+      );
+
+    final Properties javaUtilProperties= new Properties();
+    try (final FileInputStream fis= new FileInputStream(propertyFile);) {
+      javaUtilProperties.load(fis);
+    }
+
+    // assert our assumptions about the java.util.Properties implementation
+    assertThat(javaUtilProperties.size()).as("Check assumption about java.util.Properties size").isEqualTo(2);
+    assertThat(javaUtilProperties.containsKey("key one")).as("Check assumption about java.util.Properties keys").isTrue();
+    assertThat(javaUtilProperties.containsKey("key two")).as("Check assumption about java.util.Properties keys").isTrue();
+    assertThat(javaUtilProperties.getProperty("key one")).as("Check assumption about java.util.Properties values").isEqualTo("value 1");
+    assertThat(javaUtilProperties.getProperty("key two")).as("Check assumption about java.util.Properties values").isEqualTo("value 2");
+
+    // - execution
+    final PropertyFile readPropertyFile= PropertyFile.from(propertyFile);
+
+
+    // - validation
+    assertThat(readPropertyFile.getAllEntries().size()).isEqualTo(2);
+    assertThat(readPropertyFile.propertiesSize()).isEqualTo(javaUtilProperties.size());
+    for (final Map.Entry<Object, Object> e : javaUtilProperties.entrySet()) {
+      final String key = (String) e.getKey();
+      final String value = (String) e.getValue();
+      assertThat(readPropertyFile.containsKey(key)).as("propertyFile contains key %s", key).isTrue();
+      assertThat(readPropertyFile.get(key)).as("key %s contains value %s", key, value).isEqualTo(value);
+    }
+
+    final PropertyEntry pE= new PropertyEntry("\t", "key\\ \\\n  two\\\r", "  = ", "value \\\r    2", "\n");
+    final PropertyEntry pA= (PropertyEntry) readPropertyFile.getAllEntries().get(1);
+
+    assertThat(readPropertyFile.getAllEntries()).containsExactly(
+      new PropertyEntry("\t", "key\\ \\\n  one\\\n", "  : ", "value \\\n    1", "\n"),
+      new PropertyEntry("", "key\\ \\\n  two\\\r", "  = \t ", "value \\\r    2", "\n")
+    );
   }
 
 
