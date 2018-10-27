@@ -266,6 +266,8 @@ public class PropertyFile {
 
   /**
    * Removes all Entries from this PropertyFile.
+   *
+   * @since 1.1.0
    */
   public void clear() {
     this.entries.clear();
@@ -276,7 +278,10 @@ public class PropertyFile {
   /**
    * Sets the Entries for this PropertyFile.
    * All existing entries will be dropped.
-   * @param entries
+   *
+   * @param entries the new entries for this PropertyFile
+   *
+   * @since 1.1.0
    */
   public void setEntries(final List<Entry> entries) {
     this.entries.clear();
