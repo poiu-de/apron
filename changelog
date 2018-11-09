@@ -5,7 +5,7 @@ Version 2.0.0 - 2018-11-09
 --------------------------
 
   - Added functionality to reformat and reorder the entries in a PropertyFile
-	- Renamed de.poiu.apron.Options to de.poiu.apron.ApronOptions
+  - Renamed de.poiu.apron.Options to de.poiu.apron.ApronOptions
 
 
 Version 1.0.0 - 2018-09-26
