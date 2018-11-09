@@ -25,7 +25,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * Holder object to encapsulate optional parameters when writing {@link PropertyFile PropertyFiles}.
  * <p>
  * Be aware that not all combinations of options make sense in all cases. For example a
- * MissingKeyAction is not useful when {@link PropertyFile#overwrite(java.io.File, de.poiu.apron.Options) overwriting}
+ * MissingKeyAction is not useful when {@link PropertyFile#overwrite(java.io.File, de.poiu.apron.ApronOptions) overwriting}
  * a file. In these cases those options are ignored.
  * <p>
  * By default this class provides the following values:
@@ -40,7 +40,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  *
  * @author mherrn
  */
-public class Options {
+public class ApronOptions {
 
   /////////////////////////////////////////////////////////////////////////////
   //
@@ -68,17 +68,17 @@ public class Options {
   // Constructors
 
   /**
-   * Creates a new Options object with the default values.
+   * Creates a new ApronOptions object with the default values.
    * <p>
    * This is exactly the as if calling the static {@link #create() } method.
    */
-  public Options() {
+  public ApronOptions() {
     this(UTF_8, MissingKeyAction.NOTHING, UnicodeHandling.DO_NOTHING);
   }
 
 
   /**
-   * Creates a new Options object with the given values.
+   * Creates a new ApronOptions object with the given values.
    * <p>
    * While this constructor is public and is absolutely safe to use, in most cases it is
    * more convenient to use the provided fluent interface, e.g.
@@ -93,7 +93,7 @@ public class Options {
    *                          contains key-value pairs that do not exist in the written PropertyFile
    * @param unicodeHandling how to handle Unicode values when writing.
    */
-  public Options(final Charset charset, final MissingKeyAction missingKeyAction, final UnicodeHandling unicodeHandling) {
+  public ApronOptions(final Charset charset, final MissingKeyAction missingKeyAction, final UnicodeHandling unicodeHandling) {
     Objects.requireNonNull(charset);
     Objects.requireNonNull(missingKeyAction);
     Objects.requireNonNull(unicodeHandling);
@@ -111,8 +111,8 @@ public class Options {
    * Creates a new Options object with the default values.
    * @return the newly created Options object
    */
-  public static Options create() {
-    return new Options();
+  public static ApronOptions create() {
+    return new ApronOptions();
   }
 
 
@@ -122,8 +122,8 @@ public class Options {
    * @param charset the Charset to use when writing the PropertyFile.
    * @return this Options object
    */
-  public Options with(final Charset charset) {
-    return new Options(charset, this.missingKeyAction, this.unicodeHandling);
+  public ApronOptions with(final Charset charset) {
+    return new ApronOptions(charset, this.missingKeyAction, this.unicodeHandling);
   }
 
 
@@ -136,13 +136,19 @@ public class Options {
    * @param missingKeyAction how to handle key-value-pairs that exist in in the written PropertyFile, but not in the updated one
    * @return this Options object
    */
-  public Options with(final MissingKeyAction missingKeyAction) {
-    return new Options(this.charset, missingKeyAction, this.unicodeHandling);
+  public ApronOptions with(final MissingKeyAction missingKeyAction) {
+    return new ApronOptions(this.charset, missingKeyAction, this.unicodeHandling);
   }
 
 
-  public Options with(final UnicodeHandling unicodeHandling) {
-    return new Options(this.charset, this.missingKeyAction, unicodeHandling);
+  /**
+   * Returns a copy of this Options object, but with the given UnicodeHandling
+   *
+   * @param unicodeHandling how to handle Unicode values when writing a PropertyFile.
+   * @return this Options object
+   */
+  public ApronOptions with(final UnicodeHandling unicodeHandling) {
+    return new ApronOptions(this.charset, this.missingKeyAction, unicodeHandling);
   }
 
 
@@ -160,6 +166,7 @@ public class Options {
    * <p>
    * This is only meaningful on updating a File. When writing to an output stream or overwriting a
    * file or creating a new file, this options does nothing.
+   *
    * @return the MissingKeyAction to use when updating a .properties file
    */
   public MissingKeyAction getMissingKeyAction() {
@@ -167,6 +174,11 @@ public class Options {
   }
 
 
+  /**
+   * Returns the UnicodeHandling to use when writing a .properties file.
+   *
+   * @return the UnicodeHandling to use when writing a .properties file
+   */
   public UnicodeHandling getUnicodeHandling() {
     return unicodeHandling;
   }
@@ -177,8 +189,8 @@ public class Options {
     if (o == this) {
       return true;
     }
-    if (o instanceof Options) {
-      final Options that = (Options) o;
+    if (o instanceof ApronOptions) {
+      final ApronOptions that = (ApronOptions) o;
       return this.charset.equals(that.getCharset())
            && this.missingKeyAction.equals(that.getMissingKeyAction())
            && this.unicodeHandling.equals(that.getUnicodeHandling());

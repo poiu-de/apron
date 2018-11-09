@@ -15,7 +15,7 @@
  */
 package de.poiu.apron.io;
 
-import de.poiu.apron.Options;
+import de.poiu.apron.ApronOptions;
 import de.poiu.apron.UnicodeHandling;
 import de.poiu.apron.entry.BasicEntry;
 import de.poiu.apron.entry.Entry;
@@ -172,7 +172,7 @@ public class PropertyFileWriterTest {
 
     // - execution
     try(final PropertyFileWriter propertyFileWriter= new PropertyFileWriter(file,
-      Options.create()
+      ApronOptions.create()
         .with(UTF_8)
         .with(UnicodeHandling.DO_NOTHING));) {
       for (final Entry entry : entries) {
@@ -201,7 +201,7 @@ public class PropertyFileWriterTest {
 
     // - execution
     try(final PropertyFileWriter propertyFileWriter= new PropertyFileWriter(file,
-      Options.create()
+      ApronOptions.create()
         .with(UTF_8)
         .with(UnicodeHandling.BY_CHARSET));) {
       for (final Entry entry : entries) {
@@ -230,7 +230,7 @@ public class PropertyFileWriterTest {
 
     // - execution
     try(final PropertyFileWriter propertyFileWriter= new PropertyFileWriter(file,
-      Options.create()
+      ApronOptions.create()
         .with(UTF_8)
         .with(UnicodeHandling.UNICODE));) {
       for (final Entry entry : entries) {
@@ -259,7 +259,7 @@ public class PropertyFileWriterTest {
 
     // - execution
     try(final PropertyFileWriter propertyFileWriter= new PropertyFileWriter(file,
-      Options.create()
+      ApronOptions.create()
         .with(UTF_8)
         .with(UnicodeHandling.ESCAPE));) {
       for (final Entry entry : entries) {
@@ -288,7 +288,7 @@ public class PropertyFileWriterTest {
 
     // - execution
     try(final PropertyFileWriter propertyFileWriter= new PropertyFileWriter(file,
-      Options.create()
+      ApronOptions.create()
         .with(ISO_8859_1)
         .with(UnicodeHandling.ESCAPE));) {
       for (final Entry entry : entries) {
@@ -318,7 +318,7 @@ public class PropertyFileWriterTest {
 
     // - execution
     try(final PropertyFileWriter propertyFileWriter= new PropertyFileWriter(file,
-      Options.create()
+      ApronOptions.create()
         .with(ISO_8859_1)
         .with(UnicodeHandling.ESCAPE));) {
       for (final Entry entry : entries) {
@@ -348,7 +348,7 @@ public class PropertyFileWriterTest {
 
     // - execution
     try(final PropertyFileWriter propertyFileWriter= new PropertyFileWriter(file,
-      Options.create()
+      ApronOptions.create()
         .with(ISO_8859_1)
         .with(UnicodeHandling.DO_NOTHING));) {
       for (final Entry entry : entries) {

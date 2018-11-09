@@ -120,7 +120,8 @@ public class PropertyEntry implements Entry {
   /**
    * Returns the <i>escaped</i> leading whitespace of this PropertyEntry.
    * @return the <i>escaped</i> leading whitespace of this PropertyEntry
-   * @since 1.1.0
+   *
+   * @since 2.0.0
    */
   public CharSequence getLeadingWhitespace() {
     return leadingWhitespace;
@@ -139,7 +140,8 @@ public class PropertyEntry implements Entry {
   /**
    * Returns the <i>escaped</i> separator with optional surrounding whitespace of this PropertyEntry.
    * @return the <i>escaped</i> separator with optional surrounding whitespace of this PropertyEntry
-   * @since 1.1.0
+   *
+   * @since 2.0.0
    */
   public CharSequence getSeparator() {
     return separator;
@@ -167,7 +169,8 @@ public class PropertyEntry implements Entry {
   /**
    * Returns the <i>escaped</i> line ending of this PropertyEntry.
    * @return the <i>escaped</i> line ending of this PropertyEntry
-   * @since 1.1.0
+   *
+   * @since 2.0.0
    */
   public CharSequence getLineEnding() {
     return lineEnding;

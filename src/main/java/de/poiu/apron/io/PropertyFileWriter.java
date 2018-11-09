@@ -15,7 +15,7 @@
  */
 package de.poiu.apron.io;
 
-import de.poiu.apron.Options;
+import de.poiu.apron.ApronOptions;
 import de.poiu.apron.UnicodeHandling;
 import de.poiu.apron.entry.Entry;
 import de.poiu.apron.escaping.EscapeUtils;
@@ -58,7 +58,7 @@ public class PropertyFileWriter implements Closeable {
   private final BufferedWriter writer;
 
   /** The options to use for writing */
-  private final Options options;
+  private final ApronOptions options;
 
 
   /////////////////////////////////////////////////////////////////////////////
@@ -74,7 +74,7 @@ public class PropertyFileWriter implements Closeable {
    * @throws FileNotFoundException if the file cannot be written
    */
   public PropertyFileWriter(final File propertyFile) throws FileNotFoundException {
-    this(propertyFile, Options.create().with(Charset.forName("UTF-8")));
+    this(propertyFile, ApronOptions.create().with(UTF_8));
   }
 
 
@@ -85,7 +85,7 @@ public class PropertyFileWriter implements Closeable {
    * @param options the options to use for writing
    * @throws FileNotFoundException if the file cannot be written
    */
-  public PropertyFileWriter(final File propertyFile, final Options options) throws FileNotFoundException {
+  public PropertyFileWriter(final File propertyFile, final ApronOptions options) throws FileNotFoundException {
     this.writer= new BufferedWriter(new OutputStreamWriter(new FileOutputStream(propertyFile), options.getCharset()));
     this.options= options;
   }
@@ -112,7 +112,7 @@ public class PropertyFileWriter implements Closeable {
    * @param outputStream the OutputStream to write to
    */
   public PropertyFileWriter(final OutputStream outputStream) {
-    this(outputStream, Options.create().with(Charset.forName("UTF-8")));
+    this(outputStream, ApronOptions.create().with(UTF_8));
   }
 
 
@@ -122,7 +122,7 @@ public class PropertyFileWriter implements Closeable {
    * @param outputStream the OutputStream to write to
    * @param options the options to use for writing
    */
-  public PropertyFileWriter(final OutputStream outputStream, final Options options) {
+  public PropertyFileWriter(final OutputStream outputStream, final ApronOptions options) {
     this.writer= new BufferedWriter(new OutputStreamWriter(outputStream, options.getCharset()));
     this.options= options;
   }

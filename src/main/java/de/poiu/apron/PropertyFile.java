@@ -21,6 +21,10 @@ import de.poiu.apron.entry.PropertyEntry;
 import de.poiu.apron.escaping.EscapeUtils;
 import de.poiu.apron.io.PropertyFileReader;
 import de.poiu.apron.io.PropertyFileWriter;
+import de.poiu.apron.reformatting.AttachCommentsTo;
+import de.poiu.apron.reformatting.InvalidFormatException;
+import de.poiu.apron.reformatting.ReformatOptions;
+import de.poiu.apron.reformatting.Reformatter;
 import java.io.File;
 import java.io.IOException;
 import java.io.InputStream;
@@ -267,7 +271,7 @@ public class PropertyFile {
   /**
    * Removes all Entries from this PropertyFile.
    *
-   * @since 1.1.0
+   * @since 2.0.0
    */
   public void clear() {
     this.entries.clear();
@@ -281,7 +285,7 @@ public class PropertyFile {
    *
    * @param entries the new entries for this PropertyFile
    *
-   * @since 1.1.0
+   * @since 2.0.0
    */
   public void setEntries(final List<Entry> entries) {
     this.entries.clear();
@@ -492,17 +496,119 @@ public class PropertyFile {
 
 
   /**
+   * Reformats this PropertyFiles Entries according to the default ReformatOptions.
+   *
+   * @throws InvalidFormatException if the given format string is invalid
+   *
+   * @since 2.0.0
+   */
+  public void reformat() {
+    final Reformatter reformatter= new Reformatter();
+    reformatter.reformat(this);
+  }
+
+
+  /**
+   * Reformats this PropertyFiles Entries according to the format string in the given ReformatOptions.
+   * <p>
+   * Please refer to the javadoc of {@link ReformatOptions#withFormat(java.lang.String)}
+   * for a detailed description of the valid format strings.
+   *
+   * @param reformatOptions the reformat options to use when reformatting this PropertyFile
+   * @throws InvalidFormatException if the given format string is invalid
+   *
+   * @since 2.0.0
+   */
+  public void reformat(final ReformatOptions reformatOptions) {
+    final Reformatter reformatter= new Reformatter(reformatOptions);
+    reformatter.reformat(this);
+  }
+
+
+  /**
+   * Reorders this PropertyFiles Entries alphabetically by the names of their keys.
+   * <p>
+   * Comments and empty lines will be attached to the key-value pair that follows them (according
+   * to the default {@link ReformatOptions}).
+   *
+   * @since 2.0.0
+   */
+  public void reorderByKey() {
+    final Reformatter reformatter= new Reformatter();
+    reformatter.reorderByKey(this);
+  }
+
+
+  /**
+   * Reorders this PropertyFiles Entries alphabetically by the names of their keys.
+   * <p>
+   * Comments and empty lines will be handled according to the given ReformatOptions.
+   *
+   * @param reformatOptions the ReformatOptions to use when reordering. Actually only the
+   *                        {@link AttachCommentsTo} value is respected on reordering.
+   *
+   * @since 2.0.0
+   */
+  public void reorderByKey(final ReformatOptions reformatOptions) {
+    final Reformatter reformatter= new Reformatter(reformatOptions);
+    reformatter.reorderByKey(this);
+  }
+
+
+  /**
+   * Reorders this PropertyFiles Entries according to the order of those Entries keys in the given
+   * reference file.
+   * <p>
+   * Keys that only exist in the file to reorder, but not in the reference file will be put to the
+   * end of the file to reorder. Those entries are <code>not</code> reordered.
+   * <p>
+   * Comments and empty lines will be attached to the key-value pair that follows them (according
+   * to the default {@link ReformatOptions}).
+   *
+   * @param template the reference file to be used as template for the reordering
+   *
+   * @since 2.0.0
+   */
+  public void reorderByTemplate(final PropertyFile template) {
+    final Reformatter reformatter= new Reformatter();
+    reformatter.reorderByTemplate(template, this);
+  }
+
+
+  /**
+   * Reorders this PropertyFiles Entries according to the order of those Entries keys in the given
+   * reference file.
+   * <p>
+   * Keys that only exist in the file to reorder, but not in the reference file will be put to the
+   * end of the file to reorder. Those entries are <code>not</code> reordered.
+   * <p>
+   * Comments and empty lines will handled according to the {@link AttachCommentsTo} value in the given
+   * ReformatOptions.
+   *
+   * @param template the reference file to be used as template for the reordering
+   * @param reformatOptions the ReformatOptions to use when reordering. Actually only the
+   *                        {@link AttachCommentsTo} value is respected on reordering.
+   *
+   * @since 2.0.0
+   */
+  public void reorderByTemplate(final PropertyFile template, final ReformatOptions reformatOptions) {
+    final Reformatter reformatter= new Reformatter(reformatOptions);
+    reformatter.reorderByTemplate(template, this);
+  }
+
+
+  /**
    * This method does exactly the same as {@link #saveTo(java.io.File, de.poiu.apron.Options) }
    * using default options.
    * <p>
-   * See {@link Options} for a desciption of the default values.
+   * See {@link ApronOptions} for a desciption of the default values.
    *
    * @param file the file to write to
    * @see #update(java.io.File)
    * @see #overwrite(java.io.File)
    */
   public void saveTo(final File file) {
-    this.saveTo(file, Options.create());
+    this.saveTo(file, ApronOptions.create());
   }
 
 
@@ -551,7 +657,7 @@ public class PropertyFile {
    * @see #update(java.io.File, de.poiu.apron.Options)
    * @see #overwrite(java.io.File, de.poiu.apron.Options)
    */
-  public void saveTo(final File file, final Options options) {
+  public void saveTo(final File file, final ApronOptions options) {
     if (file.exists()) {
       // if the file already exists, just update the values that have changed
       this.update(file, options);
@@ -568,13 +674,13 @@ public class PropertyFile {
    * This method actually only delegates to {@link #overwrite(java.io.OutputStream, de.poiu.apron.Options) }
    * using default options.
    * <p>
-   * See {@link Options} for a desciption of the default values.
+   * See {@link ApronOptions} for a desciption of the default values.
    *
    * @param outputStream the OutputStream to write to
    * @see #overwrite(java.io.OutputStream)
    */
   public void saveTo(final OutputStream outputStream) {
-    this.overwrite(outputStream, Options.create());
+    this.overwrite(outputStream, ApronOptions.create());
   }
 
 
@@ -584,13 +690,13 @@ public class PropertyFile {
    * This method actually only delegates to {@link #overwrite(java.io.OutputStream, de.poiu.apron.Options) }
    * using default options.
    * <p>
-   * See {@link Options} for a desciption of the default values.
+   * See {@link ApronOptions} for a desciption of the default values.
    *
    * @param outputStream the OutputStream to write to
    * @param options Options to respect when writing the .properties file
    * @see #overwrite(java.io.OutputStream, de.poiu.apron.Options)
    */
-  public void saveTo(final OutputStream outputStream, final Options options) {
+  public void saveTo(final OutputStream outputStream, final ApronOptions options) {
     this.overwrite(outputStream, options);
   }
 
@@ -599,14 +705,14 @@ public class PropertyFile {
    * This method does exactly the same as {@link #update(java.io.File, de.poiu.apron.Options) }
    * using default options.
    * <p>
-   * See {@link Options} for a desciption of the default values.
+   * See {@link ApronOptions} for a desciption of the default values.
    *
    * @param file the file to update
    * @see #saveTo(java.io.File)
    * @see #overwrite(java.io.File)
    */
   public void update(final File file) {
-    update(file, Options.create());
+    update(file, ApronOptions.create());
   }
 
 
@@ -625,7 +731,7 @@ public class PropertyFile {
    * @see #saveTo(java.io.File, de.poiu.apron.Options)
    * @see #overwrite(java.io.File, de.poiu.apron.Options)
    */
-  public void update(final File file, final Options options) {
+  public void update(final File file, final ApronOptions options) {
     // first update the values of the key-value-pairs
     final PropertyFile existing= PropertyFile.from(file, options.getCharset());
     for (final Entry entry : this.entries) {
@@ -684,14 +790,14 @@ public class PropertyFile {
    * This method does exactly the same as {@link #overwrite(java.io.File, de.poiu.apron.Options) }
    * using default options.
    * <p>
-   * See {@link Options} for a desciption of the default values.
+   * See {@link ApronOptions} for a desciption of the default values.
    *
    * @param file the file to write to
    * @see #saveTo(java.io.File)
    * @see #update(java.io.File)
    */
   public void overwrite(final File file) {
-    overwrite(file, Options.create());
+    overwrite(file, ApronOptions.create());
   }
 
 
@@ -699,13 +805,13 @@ public class PropertyFile {
    * This method does exactly the same as {@link #overwrite(java.io.OutputStream, de.poiu.apron.Options) }
    * using default options.
    * <p>
-   * See {@link Options} for a desciption of the default values.
+   * See {@link ApronOptions} for a desciption of the default values.
    *
    * @param outputStream the OutputStream to write to
    * @see #saveTo(java.io.OutputStream)
    */
   public void overwrite(final OutputStream outputStream) {
-    overwrite(outputStream, Options.create());
+    overwrite(outputStream, ApronOptions.create());
   }
 
 
@@ -721,7 +827,7 @@ public class PropertyFile {
    * @see #saveTo(java.io.File)
    * @see #update(java.io.File)
    */
-  public void overwrite(final File file, final Options options) {
+  public void overwrite(final File file, final ApronOptions options) {
     this.createPathTo(file);
 
     try(final PropertyFileWriter writer= new PropertyFileWriter(file, options.with(UnicodeHandling.BY_CHARSET))) {
@@ -745,7 +851,7 @@ public class PropertyFile {
    * @param options Options to respect when writing the .properties file
    * @see #saveTo(java.io.OutputStream, de.poiu.apron.Options)
    */
-  public void overwrite(final OutputStream outputStream, final Options options) {
+  public void overwrite(final OutputStream outputStream, final ApronOptions options) {
     try(final PropertyFileWriter writer= new PropertyFileWriter(outputStream, options)) {
       for (final Entry entry : this.entries) {
         writer.writeEntry(entry);

@@ -1006,7 +1006,7 @@ public class PropertyFileTest {
 
     // - execution
     readPropertyFile.setValue("UTF-8-key-Äሴ", "UTF-8-value-編Я");
-    readPropertyFile.saveTo(targetFile, Options.create().with(ISO_8859_1));
+    readPropertyFile.saveTo(targetFile, ApronOptions.create().with(ISO_8859_1));
 
     // - validation
     final String newFileContent= toString(targetFile, ISO_8859_1);
@@ -1028,7 +1028,7 @@ public class PropertyFileTest {
 
     // - execution
     readPropertyFile.setValue("UTF-8-key-Äሴ", "UTF-8-value-編Я");
-    readPropertyFile.saveTo(propertyFile, Options.create().with(UTF_8));
+    readPropertyFile.saveTo(propertyFile, ApronOptions.create().with(UTF_8));
 
     // - validation
     final String newFileContent= toString(propertyFile, UTF_8);
@@ -1053,7 +1053,7 @@ public class PropertyFileTest {
 
     // - execution
     readPropertyFile.setValue("UTF-8-key-Äሴ", "UTF-8-value-編Я");
-    readPropertyFile.saveTo(targetFile, Options.create().with(UTF_8));
+    readPropertyFile.saveTo(targetFile, ApronOptions.create().with(UTF_8));
 
     // - validation
     final String newFileContent= toString(targetFile, UTF_8);
@@ -1076,7 +1076,7 @@ public class PropertyFileTest {
     // - execution
     readPropertyFile.setValue("UTF-8-key-Äሴ", "UTF-8-value-編Я");
     readPropertyFile.setValue("nextKey", "Schlüsselښ");  //overwrite value with a different content (added 'l' between h and 'ü')
-    readPropertyFile.saveTo(propertyFile, Options.create().with(UTF_8));
+    readPropertyFile.saveTo(propertyFile, ApronOptions.create().with(UTF_8));
 
     // - validation
     final String newFileContent= toString(propertyFile, UTF_8);
@@ -1099,7 +1099,7 @@ public class PropertyFileTest {
     // - execution
     readPropertyFile.setValue("UTF-8-key-Äሴ", "UTF-8-value-編Я");
     readPropertyFile.setValue("nextKey", "Schüsselښ");  //overwrite value with the same content
-    readPropertyFile.saveTo(propertyFile, Options.create().with(UTF_8));
+    readPropertyFile.saveTo(propertyFile, ApronOptions.create().with(UTF_8));
 
     // - validation
     final String newFileContent= toString(propertyFile, UTF_8);
@@ -1126,7 +1126,7 @@ public class PropertyFileTest {
 
     // - execution
     readPropertyFile.setValue("UTF-8-key-Äሴ", "UTF-8-value-編Я");
-    readPropertyFile.saveTo(targetFile, Options.create().with(UTF_8));
+    readPropertyFile.saveTo(targetFile, ApronOptions.create().with(UTF_8));
 
     // - validation
     final String newFileContent= toString(targetFile, UTF_8);
@@ -1149,7 +1149,7 @@ public class PropertyFileTest {
 
     // - execution
     readPropertyFile.setValue("UTF-8-key-Äሴ", "UTF-8-value-編Я");
-    readPropertyFile.saveTo(propertyFile, Options.create().with(UTF_8));
+    readPropertyFile.saveTo(propertyFile, ApronOptions.create().with(UTF_8));
 
     // - validation
     final String newFileContent= toString(propertyFile, UTF_8);
@@ -1175,7 +1175,7 @@ public class PropertyFileTest {
 
     // - execution
     readPropertyFile.setValue("nextKey", "Schüssel");
-    readPropertyFile.saveTo(targetFile, Options.create().with(ISO_8859_1));
+    readPropertyFile.saveTo(targetFile, ApronOptions.create().with(ISO_8859_1));
 
     // - validation
     final String newFileContent= toString(targetFile, ISO_8859_1);
@@ -1200,7 +1200,7 @@ public class PropertyFileTest {
 
     // - execution
     readPropertyFile.setValue("nextKey", "Schüssel");
-    readPropertyFile.saveTo(targetFile, Options.create().with(UTF_8));
+    readPropertyFile.saveTo(targetFile, ApronOptions.create().with(UTF_8));
 
     // - validation
     final String newFileContent= toString(targetFile, UTF_8);
@@ -1222,7 +1222,7 @@ public class PropertyFileTest {
     // - execution
     propertyFile.setValue("nextKey", "Schüsselښ");
     propertyFile.setValue("UTF-8-key-Äሴ", "UTF-8-value-編Я");
-    propertyFile.saveTo(targetFile, Options.create().with(UTF_8));
+    propertyFile.saveTo(targetFile, ApronOptions.create().with(UTF_8));
 
     // - validation
     final String newFileContent= toString(targetFile, UTF_8);
@@ -1244,7 +1244,7 @@ public class PropertyFileTest {
     // - execution
     propertyFile.setValue("nextKey", "Schüsselښ");
     propertyFile.setValue("UTF-8-key-Äሴ", "UTF-8-value-編Я");
-    propertyFile.saveTo(targetFile, Options.create().with(ISO_8859_1));
+    propertyFile.saveTo(targetFile, ApronOptions.create().with(ISO_8859_1));
 
     // - validation
     final String newFileContent= toString(targetFile, ISO_8859_1);
@@ -1325,7 +1325,7 @@ public class PropertyFileTest {
     readPropertyFile.remove("keyA2");
     readPropertyFile.setValue("keyA4", "NEW value A4");
 
-    readPropertyFile.update(propertyFile, Options.create().with(MissingKeyAction.NOTHING));
+    readPropertyFile.update(propertyFile, ApronOptions.create().with(MissingKeyAction.NOTHING));
 
     // - validation
     final String newFileContent= toString(propertyFile);
@@ -1356,7 +1356,7 @@ public class PropertyFileTest {
     readPropertyFile.setValue("keyA1", "NEW valueA1");
     readPropertyFile.remove("keyA2");
     readPropertyFile.setValue("keyA4", "NEW value A4");
-    readPropertyFile.update(propertyFile, Options.create().with(MissingKeyAction.DELETE));
+    readPropertyFile.update(propertyFile, ApronOptions.create().with(MissingKeyAction.DELETE));
 
     // - validation
     final String newFileContent= toString(propertyFile);
@@ -1384,7 +1384,7 @@ public class PropertyFileTest {
     readPropertyFile.setValue("keyA1", "NEW valueA1");
     readPropertyFile.remove("keyA2");
     readPropertyFile.setValue("keyA4", "NEW value A4");
-    readPropertyFile.update(propertyFile, Options.create().with(MissingKeyAction.COMMENT));
+    readPropertyFile.update(propertyFile, ApronOptions.create().with(MissingKeyAction.COMMENT));
 
     // - validation
     final String newFileContent= toString(propertyFile);
