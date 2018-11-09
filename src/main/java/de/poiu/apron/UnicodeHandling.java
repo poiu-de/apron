@@ -16,7 +16,7 @@
 package de.poiu.apron;
 
 /**
- * Specifies how Unicode characters are written when writing a {@link PropertyFile} to
+ * Specifies how Unicode characters are written when writing a {@link de.poiu.apron.PropertyFile} to
  * a file or OutputStream.
  * <p>
  * This is actually only relevant when writing in a supported UTF charset, since in other cases

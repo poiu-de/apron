@@ -29,7 +29,6 @@ import java.util.stream.Collectors;
  * Specifies how to handle comment lines and empty lines when reordering the properties in .properties files.
  *
  * @author mherrn
- *
  * @since 2.0.0
  */
 public enum AttachCommentsTo {
@@ -166,7 +165,7 @@ public enum AttachCommentsTo {
    * key A = A
    * </pre>
    *
-   * would be changed (by sorting {@link OrderPropertiesBy#NAME alphabetically} to
+   * would be changed (by sorting alphabetically) to
    *
    * <pre>
    * # Comment 1

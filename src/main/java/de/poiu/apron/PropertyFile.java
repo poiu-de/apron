@@ -100,7 +100,7 @@ public class PropertyFile {
    * Returns the key-value-pairs in this PropertyFile as an unmodifiable map.
    * This map is only a snapshot of the current state.
    * <p>
-   * If a modifiable map is needed use the method {@link #toMap(java.util.Map) } to provide
+   * If a modifiable map is needed use the method {@link #toMap(java.util.Map)} to provide
    * the map to fill.
    *
    * @return a map with the key-value-pairs of this PropertyFile
@@ -284,7 +284,6 @@ public class PropertyFile {
    * All existing entries will be dropped.
    *
    * @param entries the new entries for this PropertyFile
-   *
    * @since 2.0.0
    */
   public void setEntries(final List<Entry> entries) {
@@ -498,8 +497,7 @@ public class PropertyFile {
   /**
    * Reformats this PropertyFiles Entries according to the default ReformatOptions.
    *
-   * @throws InvalidFormatException if the given format string is invalid
-   *
+   * @throws de.poiu.apron.reformatting.InvalidFormatException if the given format string is invalid
    * @since 2.0.0
    */
   public void reformat() {
@@ -511,12 +509,11 @@ public class PropertyFile {
   /**
    * Reformats this PropertyFiles Entries according to the format string in the given ReformatOptions.
    * <p>
-   * Please refer to the javadoc of {@link ReformatOptions#withFormat(java.lang.String)}
+   * Please refer to the javadoc of {@link de.poiu.apron.reformatting.ReformatOptions#withFormat(java.lang.String)}
    * for a detailed description of the valid format strings.
    *
    * @param reformatOptions the reformat options to use when reformatting this PropertyFile
-   * @throws InvalidFormatException if the given format string is invalid
-   *
+   * @throws de.poiu.apron.reformatting.InvalidFormatException if the given format string is invalid
    * @since 2.0.0
    */
   public void reformat(final ReformatOptions reformatOptions) {
@@ -529,7 +526,7 @@ public class PropertyFile {
    * Reorders this PropertyFiles Entries alphabetically by the names of their keys.
    * <p>
    * Comments and empty lines will be attached to the key-value pair that follows them (according
-   * to the default {@link ReformatOptions}).
+   * to the default {@link de.poiu.apron.reformatting.ReformatOptions}).
    *
    * @since 2.0.0
    */
@@ -545,8 +542,7 @@ public class PropertyFile {
    * Comments and empty lines will be handled according to the given ReformatOptions.
    *
    * @param reformatOptions the ReformatOptions to use when reordering. Actually only the
-   *                        {@link AttachCommentsTo} value is respected on reordering.
-   *
+   *                        {@link de.poiu.apron.reformatting.AttachCommentsTo} value is respected on reordering.
    * @since 2.0.0
    */
   public void reorderByKey(final ReformatOptions reformatOptions) {
@@ -563,10 +559,9 @@ public class PropertyFile {
    * end of the file to reorder. Those entries are <code>not</code> reordered.
    * <p>
    * Comments and empty lines will be attached to the key-value pair that follows them (according
-   * to the default {@link ReformatOptions}).
+   * to the default {@link de.poiu.apron.reformatting.ReformatOptions}).
    *
    * @param template the reference file to be used as template for the reordering
-   *
    * @since 2.0.0
    */
   public void reorderByTemplate(final PropertyFile template) {
@@ -582,13 +577,12 @@ public class PropertyFile {
    * Keys that only exist in the file to reorder, but not in the reference file will be put to the
    * end of the file to reorder. Those entries are <code>not</code> reordered.
    * <p>
-   * Comments and empty lines will handled according to the {@link AttachCommentsTo} value in the given
+   * Comments and empty lines will handled according to the {@link de.poiu.apron.reformatting.AttachCommentsTo} value in the given
    * ReformatOptions.
    *
    * @param template the reference file to be used as template for the reordering
    * @param reformatOptions the ReformatOptions to use when reordering. Actually only the
-   *                        {@link AttachCommentsTo} value is respected on reordering.
-   *
+   *                        {@link de.poiu.apron.reformatting.AttachCommentsTo} value is respected on reordering.
    * @since 2.0.0
    */
   public void reorderByTemplate(final PropertyFile template, final ReformatOptions reformatOptions) {
@@ -598,10 +592,10 @@ public class PropertyFile {
 
 
   /**
-   * This method does exactly the same as {@link #saveTo(java.io.File, de.poiu.apron.Options) }
+   * This method does exactly the same as {@link #saveTo(java.io.File, de.poiu.apron.ApronOptions)}
    * using default options.
    * <p>
-   * See {@link ApronOptions} for a desciption of the default values.
+   * See {@link de.poiu.apron.ApronOptions} for a desciption of the default values.
    *
    * @param file the file to write to
    * @see #update(java.io.File)
@@ -654,8 +648,8 @@ public class PropertyFile {
    *
    * @param file the file to write to
    * @param options Options to respect when writing the .properties file
-   * @see #update(java.io.File, de.poiu.apron.Options)
-   * @see #overwrite(java.io.File, de.poiu.apron.Options)
+   * @see #update(java.io.File, de.poiu.apron.ApronOptions)
+   * @see #overwrite(java.io.File, de.poiu.apron.ApronOptions)
    */
   public void saveTo(final File file, final ApronOptions options) {
     if (file.exists()) {
@@ -671,10 +665,10 @@ public class PropertyFile {
   /**
    * Saves the entries in this PropertyFile to the given OutputStream.
    * <p>
-   * This method actually only delegates to {@link #overwrite(java.io.OutputStream, de.poiu.apron.Options) }
+   * This method actually only delegates to {@link #overwrite(java.io.OutputStream, de.poiu.apron.ApronOptions)}
    * using default options.
    * <p>
-   * See {@link ApronOptions} for a desciption of the default values.
+   * See {@link de.poiu.apron.ApronOptions} for a desciption of the default values.
    *
    * @param outputStream the OutputStream to write to
    * @see #overwrite(java.io.OutputStream)
@@ -687,14 +681,14 @@ public class PropertyFile {
   /**
    * Saves the entries in this PropertyFile to the given OutputStream.
    * <p>
-   * This method actually only delegates to {@link #overwrite(java.io.OutputStream, de.poiu.apron.Options) }
+   * This method actually only delegates to {@link #overwrite(java.io.OutputStream, de.poiu.apron.ApronOptions)}
    * using default options.
    * <p>
-   * See {@link ApronOptions} for a desciption of the default values.
+   * See {@link de.poiu.apron.ApronOptions} for a desciption of the default values.
    *
    * @param outputStream the OutputStream to write to
    * @param options Options to respect when writing the .properties file
-   * @see #overwrite(java.io.OutputStream, de.poiu.apron.Options)
+   * @see #overwrite(java.io.OutputStream, de.poiu.apron.ApronOptions)
    */
   public void saveTo(final OutputStream outputStream, final ApronOptions options) {
     this.overwrite(outputStream, options);
@@ -702,10 +696,10 @@ public class PropertyFile {
 
 
   /**
-   * This method does exactly the same as {@link #update(java.io.File, de.poiu.apron.Options) }
+   * This method does exactly the same as {@link #update(java.io.File, de.poiu.apron.ApronOptions)}
    * using default options.
    * <p>
-   * See {@link ApronOptions} for a desciption of the default values.
+   * See {@link de.poiu.apron.ApronOptions} for a desciption of the default values.
    *
    * @param file the file to update
    * @see #saveTo(java.io.File)
@@ -728,8 +722,8 @@ public class PropertyFile {
    *
    * @param file the file to update
    * @param options Options to respect when writing the .properties file
-   * @see #saveTo(java.io.File, de.poiu.apron.Options)
-   * @see #overwrite(java.io.File, de.poiu.apron.Options)
+   * @see #saveTo(java.io.File, de.poiu.apron.ApronOptions)
+   * @see #overwrite(java.io.File, de.poiu.apron.ApronOptions)
    */
   public void update(final File file, final ApronOptions options) {
     // first update the values of the key-value-pairs
@@ -787,10 +781,10 @@ public class PropertyFile {
 
 
   /**
-   * This method does exactly the same as {@link #overwrite(java.io.File, de.poiu.apron.Options) }
+   * This method does exactly the same as {@link #overwrite(java.io.File, de.poiu.apron.ApronOptions)}
    * using default options.
    * <p>
-   * See {@link ApronOptions} for a desciption of the default values.
+   * See {@link de.poiu.apron.ApronOptions} for a desciption of the default values.
    *
    * @param file the file to write to
    * @see #saveTo(java.io.File)
@@ -802,10 +796,10 @@ public class PropertyFile {
 
 
   /**
-   * This method does exactly the same as {@link #overwrite(java.io.OutputStream, de.poiu.apron.Options) }
+   * This method does exactly the same as {@link #overwrite(java.io.OutputStream, de.poiu.apron.ApronOptions)}
    * using default options.
    * <p>
-   * See {@link ApronOptions} for a desciption of the default values.
+   * See {@link de.poiu.apron.ApronOptions} for a desciption of the default values.
    *
    * @param outputStream the OutputStream to write to
    * @see #saveTo(java.io.OutputStream)
@@ -849,7 +843,7 @@ public class PropertyFile {
    *
    * @param outputStream the OutputStream to write to
    * @param options Options to respect when writing the .properties file
-   * @see #saveTo(java.io.OutputStream, de.poiu.apron.Options)
+   * @see #saveTo(java.io.OutputStream, de.poiu.apron.ApronOptions)
    */
   public void overwrite(final OutputStream outputStream, final ApronOptions options) {
     try(final PropertyFileWriter writer= new PropertyFileWriter(outputStream, options)) {

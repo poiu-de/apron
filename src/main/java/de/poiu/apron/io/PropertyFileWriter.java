@@ -28,7 +28,6 @@ import java.io.IOException;
 import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.charset.Charset;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -71,7 +70,7 @@ public class PropertyFileWriter implements Closeable {
    * The file will be written in UTF-8 encoding.
    *
    * @param propertyFile the file to write to
-   * @throws FileNotFoundException if the file cannot be written
+   * @throws java.io.FileNotFoundException if the file cannot be written
    */
   public PropertyFileWriter(final File propertyFile) throws FileNotFoundException {
     this(propertyFile, ApronOptions.create().with(UTF_8));
@@ -83,7 +82,7 @@ public class PropertyFileWriter implements Closeable {
    *
    * @param propertyFile the file to write to
    * @param options the options to use for writing
-   * @throws FileNotFoundException if the file cannot be written
+   * @throws java.io.FileNotFoundException if the file cannot be written
    */
   public PropertyFileWriter(final File propertyFile, final ApronOptions options) throws FileNotFoundException {
     this.writer= new BufferedWriter(new OutputStreamWriter(new FileOutputStream(propertyFile), options.getCharset()));
@@ -136,7 +135,7 @@ public class PropertyFileWriter implements Closeable {
    * Writes an Entry to this Writer.
    *
    * @param entry the entry to write
-   * @throws IOException if the writing failed
+   * @throws java.io.IOException if the writing failed
    */
   public void writeEntry(final Entry entry) throws IOException {
     if (options.getUnicodeHandling() == UnicodeHandling.ESCAPE

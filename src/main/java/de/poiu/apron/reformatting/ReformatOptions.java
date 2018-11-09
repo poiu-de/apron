@@ -24,10 +24,10 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 /**
  * Holder object to encapsulate optional parameters when reformatting {@link PropertyFile PropertyFiles}
- * via {@link Reformatter}.
+ * via {@link de.poiu.apron.reformatting.Reformatter}.
  * <p>
  * Be aware that not all combinations of options make sense in all cases. For example a
- * {@link AttachCommentsTo} is not useful when {@link Reformatter#reformat(java.io.File) reformatting key-value pairs}
+ * {@link de.poiu.apron.reformatting.AttachCommentsTo} is not useful when {@link de.poiu.apron.reformatting.Reformatter#reformat(java.io.File) reformatting key-value pairs}
  * in a PropertyFile. In these cases those options are ignored.
  * <p>
  * By default this class provides the following values:
@@ -44,7 +44,6 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * This class is immutable and therefore thread safe. All modification methods actually return a new object.
  *
  * @author mherrn
- *
  * @since 2.0.0
  */
 public class ReformatOptions {
@@ -86,7 +85,7 @@ public class ReformatOptions {
   /**
    * Creates a new Options object with the default values.
    * <p>
-   * This is exactly the as if calling the static {@link #create() } method.
+   * This is exactly the as if calling the static {@link #create()} method.
    */
   public ReformatOptions() {
     this(UTF_8, UnicodeHandling.DO_NOTHING, "<key> = <value>\\n", false, AttachCommentsTo.NEXT_PROPERTY);
@@ -104,6 +103,7 @@ public class ReformatOptions {
    *                               .with(StandardCharsets.ISO_8859_1)
    *                               .withFormat("&lt;key&gt; :\\n\t&lt;value&gt;\\n");
    * </pre>
+   *
    * @param charset the Charset to use for reading and writing a PropertyFile
    * @param unicodeHandling how to handle Unicode values when writing.
    * @param format the format to use on reformatting key-value pairs
@@ -133,6 +133,7 @@ public class ReformatOptions {
 
   /**
    * Creates a new ReformatOptions object with the default values.
+   *
    * @return the newly created ReformatOptions object
    */
   public static ReformatOptions create() {
@@ -238,6 +239,7 @@ public class ReformatOptions {
 
   /**
    * Returns the Charset with which to write a PropertyFile.
+   *
    * @return the Charset with which to write a PropertyFile
    */
   public Charset getCharset() {
@@ -247,6 +249,7 @@ public class ReformatOptions {
 
   /**
    * Returns the UnicodeHandling to use when writing a PropertyFile.
+   *
    * @return the UnicodeHandling to use when writing a PropertyFile
    */
   public UnicodeHandling getUnicodeHandling() {
@@ -256,6 +259,7 @@ public class ReformatOptions {
 
   /**
    * Returns the format string to use when reformatting a PropertyFile.
+   *
    * @return the format string to use when reformatting a PropertyFile
    */
   public String getFormat() {
@@ -265,6 +269,7 @@ public class ReformatOptions {
 
   /**
    * Returns whether the key and value should be reformatted when reformatting a PropertyFile.
+   *
    * @return whether the key and value should be reformatted when reformatting a PropertyFile
    */
   public boolean getReformatKeyAndValue() {
@@ -274,6 +279,7 @@ public class ReformatOptions {
 
   /**
    * Returns how to handle comments and empty lines when reordering a PropertyFile.
+   *
    * @return how to handle comments and empty lines when reordering a PropertyFile
    */
   public AttachCommentsTo getAttachCommentsTo() {

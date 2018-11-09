@@ -24,35 +24,40 @@ package de.poiu.apron.escaping;
 class InvalidUnicodeCharacterException extends Exception {
 
   /**
-   * Creates a new instance of <code>InvalidUnicodeCharacterException</code> without detail message.
+   * @see Exception#Exception()
    */
   public InvalidUnicodeCharacterException() {
   }
 
 
   /**
-   * Constructs an instance of <code>InvalidUnicodeCharacterException</code> with the specified detail message.
-   *
-   * @param msg the detail message.
+   * @see Exception#Exception(java.lang.String)
    */
   public InvalidUnicodeCharacterException(String msg) {
     super(msg);
   }
 
 
+  /**
+   * @see Exception#Exception(java.lang.String, java.lang.Throwable)
+   */
   public InvalidUnicodeCharacterException(String message, Throwable cause) {
     super(message, cause);
   }
 
 
+  /**
+   * @see Exception#Exception(java.lang.Throwable)
+   */
   public InvalidUnicodeCharacterException(Throwable cause) {
     super(cause);
   }
 
 
+  /**
+   * @see Exception#Exception(java.lang.String, java.lang.Throwable, boolean, boolean)
+   */
   public InvalidUnicodeCharacterException(String message, Throwable cause, boolean enableSuppression, boolean writableStackTrace) {
     super(message, cause, enableSuppression, writableStackTrace);
   }
-
-
 }

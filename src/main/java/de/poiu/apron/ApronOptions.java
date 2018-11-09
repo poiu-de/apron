@@ -25,7 +25,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
  * Holder object to encapsulate optional parameters when writing {@link PropertyFile PropertyFiles}.
  * <p>
  * Be aware that not all combinations of options make sense in all cases. For example a
- * MissingKeyAction is not useful when {@link PropertyFile#overwrite(java.io.File, de.poiu.apron.ApronOptions) overwriting}
+ * MissingKeyAction is not useful when {@link de.poiu.apron.PropertyFile#overwrite(java.io.File, de.poiu.apron.ApronOptions) overwriting}
  * a file. In these cases those options are ignored.
  * <p>
  * By default this class provides the following values:
@@ -70,7 +70,7 @@ public class ApronOptions {
   /**
    * Creates a new ApronOptions object with the default values.
    * <p>
-   * This is exactly the as if calling the static {@link #create() } method.
+   * This is exactly the as if calling the static {@link #create()} method.
    */
   public ApronOptions() {
     this(UTF_8, MissingKeyAction.NOTHING, UnicodeHandling.DO_NOTHING);
@@ -88,6 +88,7 @@ public class ApronOptions {
    *                               .with(StandardCharsets.ISO_8859_1)
    *                               .with(MissingKeyAction.DELETE);
    * </pre>
+   *
    * @param charset the Charset to use for writing a PropertyFile
    * @param missingKeyAction the MissingKeyAction to apply when the updated target .properties file
    *                          contains key-value pairs that do not exist in the written PropertyFile
@@ -109,6 +110,7 @@ public class ApronOptions {
 
   /**
    * Creates a new Options object with the default values.
+   *
    * @return the newly created Options object
    */
   public static ApronOptions create() {
@@ -154,6 +156,7 @@ public class ApronOptions {
 
   /**
    * Returns the Charset with which to write a PropertyFile.
+   *
    * @return the Charset with which to write a PropertyFile
    */
   public Charset getCharset() {

@@ -17,7 +17,7 @@ package de.poiu.apron;
 
 
 /**
- * A enum indicating what to do if a key-value-pair was found in the file a {@link PropertyFile}
+ * A enum indicating what to do if a key-value-pair was found in the file a {@link de.poiu.apron.PropertyFile}
  * is written to, but not in the written PropertyFile.
  * <p>
  * This is only relevant when updating existing files.

@@ -119,8 +119,8 @@ public class PropertyEntry implements Entry {
 
   /**
    * Returns the <i>escaped</i> leading whitespace of this PropertyEntry.
-   * @return the <i>escaped</i> leading whitespace of this PropertyEntry
    *
+   * @return the <i>escaped</i> leading whitespace of this PropertyEntry
    * @since 2.0.0
    */
   public CharSequence getLeadingWhitespace() {
@@ -130,6 +130,7 @@ public class PropertyEntry implements Entry {
 
   /**
    * Returns the <i>escaped</i> key of this PropertyEntry.
+   *
    * @return the <i>escaped</i> key of this PropertyEntry
    */
   public CharSequence getKey() {
@@ -139,8 +140,8 @@ public class PropertyEntry implements Entry {
 
   /**
    * Returns the <i>escaped</i> separator with optional surrounding whitespace of this PropertyEntry.
-   * @return the <i>escaped</i> separator with optional surrounding whitespace of this PropertyEntry
    *
+   * @return the <i>escaped</i> separator with optional surrounding whitespace of this PropertyEntry
    * @since 2.0.0
    */
   public CharSequence getSeparator() {
@@ -150,6 +151,7 @@ public class PropertyEntry implements Entry {
 
   /**
    * Returns the <i>escaped</i> value of this PropertyEntry.
+   *
    * @return the <i>escaped</i> value of this PropertyEntry
    */
   public CharSequence getValue() {
@@ -159,6 +161,7 @@ public class PropertyEntry implements Entry {
 
   /**
    * Sets the new <i>escaped</i> value for this PropertyEntry.
+   *
    * @param value the new <i>escaped</i> value for this PropertyEntry
    */
   public void setValue(final CharSequence value) {
@@ -168,8 +171,8 @@ public class PropertyEntry implements Entry {
 
   /**
    * Returns the <i>escaped</i> line ending of this PropertyEntry.
-   * @return the <i>escaped</i> line ending of this PropertyEntry
    *
+   * @return the <i>escaped</i> line ending of this PropertyEntry
    * @since 2.0.0
    */
   public CharSequence getLineEnding() {

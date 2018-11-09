@@ -63,7 +63,7 @@ public class PropertyFileReader implements Closeable {
    * The file is assumed to be UTF-8 encoded.
    *
    * @param propertyFile the file to read
-   * @throws FileNotFoundException if the given was does not exist
+   * @throws java.io.FileNotFoundException if the given file does not exist
    */
   public PropertyFileReader(final File propertyFile) throws FileNotFoundException {
     this(propertyFile, Charset.forName("UTF-8"));
@@ -77,7 +77,7 @@ public class PropertyFileReader implements Closeable {
    *
    * @param propertyFile the file to read
    * @param charset the encoding of the file
-   * @throws FileNotFoundException if the given was does not exist
+   * @throws java.io.FileNotFoundException if the given file does not exist
    */
   public PropertyFileReader(final File propertyFile, final Charset charset) throws FileNotFoundException {
     this.reader= new BufferedReader(new InputStreamReader(new FileInputStream(propertyFile), charset));
@@ -129,7 +129,7 @@ public class PropertyFileReader implements Closeable {
    * If no the source does not provide any more entries, <code>null</code> is returned.
    *
    * @return the next Entry or <code>null</code> if there are no more entries
-   * @throws IOException if reading the next entry failed
+   * @throws java.io.IOException if reading the next entry failed
    */
   public Entry readEntry() throws IOException {
     final CharSequence logicalLine= readLogicalLine();
@@ -529,6 +529,7 @@ public class PropertyFileReader implements Closeable {
     result[1]= valueWithLineEnding;
     return result;
   }
+
 
   @Override
   public void close() throws IOException {

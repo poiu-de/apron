@@ -36,7 +36,6 @@ import java.util.regex.Pattern;
  * Reformat .properties files.
  *
  * @author mherrn
- *
  * @since 2.0.0
  */
 public class Reformatter {
@@ -129,12 +128,12 @@ public class Reformatter {
 
   /**
    * Reformats the key-value pairs in the given .properties file according to the default
-   * {@link ReformatOptions}.
+   * {@link de.poiu.apron.reformatting.ReformatOptions}.
    * <p>
    * This method actually changes the file on disk.
    *
    * @param propertyFile the .properties file whose key-value pairs to reformat
-   * @throws InvalidFormatException if the given format string is invalid
+   * @throws de.poiu.apron.reformatting.InvalidFormatException if the given format string is invalid
    */
   public void reformat(final File propertyFile) {
     this.reformat(propertyFile, this.reformatOptions);
@@ -149,7 +148,7 @@ public class Reformatter {
    *
    * @param file the .properties file whose key-value pairs to reformat
    * @param reformatOptions the ReformatOptions to use when reformatting the .properties file
-   * @throws InvalidFormatException if the given format string is invalid
+   * @throws de.poiu.apron.reformatting.InvalidFormatException if the given format string is invalid
    */
   public void reformat(final File file, final ReformatOptions reformatOptions) {
     Objects.requireNonNull(file);
@@ -164,12 +163,12 @@ public class Reformatter {
 
   /**
    * Reformats the PropertyEntries in the given PropertyFile according to the default
-   * {@link ReformatOptions}.
+   * {@link de.poiu.apron.reformatting.ReformatOptions}.
    * <p>
    * This method actually changes the files on disk.
    *
    * @param propertyFile the PropertiesFile whose PropertyEntries to reformat
-   * @throws InvalidFormatException if the given format string is invalid
+   * @throws de.poiu.apron.reformatting.InvalidFormatException if the given format string is invalid
    */
   public void reformat(final PropertyFile propertyFile) {
     this.reformat(propertyFile, this.reformatOptions);
@@ -184,7 +183,7 @@ public class Reformatter {
    *
    * @param propertyFile the PropertiesFile whose PropertyEntries to reformat
    * @param reformatOptions the reformat options to use when reformatting the PropertyFile
-   * @throws InvalidFormatException if the given format string is invalid
+   * @throws de.poiu.apron.reformatting.InvalidFormatException if the given format string is invalid
    */
   public void reformat(final PropertyFile propertyFile, final ReformatOptions reformatOptions) {
     Objects.requireNonNull(propertyFile);
@@ -227,7 +226,7 @@ public class Reformatter {
 
   /**
    * Reorders the key-value pairs in the given .properties file alphabetically by the names
-   * of its keys according to the default {@link ReformatOptions}.
+   * of its keys according to the default {@link de.poiu.apron.reformatting.ReformatOptions}.
    * <p>
    * This method actually changes the file on disk.
    *
@@ -259,7 +258,7 @@ public class Reformatter {
 
   /**
    * Reorders the Entries in the given PropertyFile alphabetically by the names
-   * of its PropertyEntries keys according to the default {@link ReformatOptions}.
+   * of its PropertyEntries keys according to the default {@link de.poiu.apron.reformatting.ReformatOptions}.
    * <p>
    * This method does not change any files on disk.
    *
@@ -356,7 +355,7 @@ public class Reformatter {
    * Keys that only exist in the file to reorder, but not in the reference file will be put to the
    * end of the file to reorder. Those entries are <code>not</code> reordered.
    * <p>
-   * The default {@link ReformatOptions} will be used when reordering the key-value pairs.
+   * The default {@link de.poiu.apron.reformatting.ReformatOptions} will be used when reordering the key-value pairs.
    * <p>
    * This method actually changes the fileToReorder on disk. The template file will not be modified.
    *
@@ -375,7 +374,7 @@ public class Reformatter {
    * Keys that only exist in the file to reorder, but not in the reference file will be put to the
    * end of the file to reorder. Those entries are <code>not</code> reordered.
    * <p>
-   * The default {@link ReformatOptions} will be used when reordering the key-value pairs.
+   * The default {@link de.poiu.apron.reformatting.ReformatOptions} will be used when reordering the key-value pairs.
    * <p>
    * This method actually changes the fileToReorder on disk. The template file will not be modified.
    *
@@ -418,7 +417,7 @@ public class Reformatter {
    * Keys that only exist in the file to reorder, but not in the reference file will be put to the
    * end of the PropertyFile. Those entries are <code>not</code> reordered.
    * <p>
-   * The default {@link ReformatOptions} will be used when reordering the key-value pairs.
+   * The default {@link de.poiu.apron.reformatting.ReformatOptions} will be used when reordering the key-value pairs.
    * <p>
    * This method doesn't change any files on disk.
    *
