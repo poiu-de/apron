@@ -315,7 +315,7 @@ public class PropertyFile {
    * @return the values in this PropertyFile
    */
   public List<String> values() {
-    final List<String> values= new ArrayList(this.propertyEntries.size());
+    final List<String> values= new ArrayList<>(this.propertyEntries.size());
 
     this.propertyEntries.forEach((key, propertyEntry) -> {
       values.add(EscapeUtils.unescape(propertyEntry.getValue()).toString());
