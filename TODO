@@ -1,0 +1,15 @@
+Release x.x.x
+-------------
+ - Doch das File Object beim Lesen mit abspeichern?
+   Dann können wir eine update/overwrite Methode anbieten, die das direkt
+   benutzt. Diese wirft dann eine Exception, wenn nicht aus einem File
+   gelesen wurde.
+ - modularisieren? (Jigsaw) (+Multimodule)
+ - Options auch fürs Lesen verwenden? Zumindest das Encoding greift ja auch
+   dort
+   - nicht unbedingt, da ja _nur_ das Encoding dort relevant ist.
+ - Javadoc in Asciidoc (muss mit UMLdoclet zusammenspielen)
+ - package-info.adoc
+ - Javadoc mit Java 11 generieren. Das würde multi-module build erfordern
+ - java.util.Properties ableiten (wichtig?)
+   PropertyFile.asProperties():Properties (Wrapper)
