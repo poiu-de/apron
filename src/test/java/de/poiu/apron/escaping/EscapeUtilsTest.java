@@ -250,6 +250,18 @@ public class EscapeUtilsTest {
   }
 
 
+  /**
+   * This test checks bug #5: https://github.com/hupfdule/apron/issues/5
+   */
+  @Test
+  public void testEscape_Backslashes() {
+    assertThat(EscapeUtils.escapePropertyKey("my\\key").toString())
+      .isEqualTo("my\\\\key");
+    assertThat(EscapeUtils.escapePropertyKey("my\\value").toString())
+      .isEqualTo("my\\\\value");
+  }
+
+
   @Test
   public void testComment() {
     assertThat(EscapeUtils.comment(""

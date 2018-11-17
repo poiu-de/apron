@@ -1853,6 +1853,43 @@ public class PropertyFileTest {
   }
 
 
+  /**
+   * This test verifies bug #5: https://github.com/hupfdule/apron/issues/5
+   */
+  @Test
+  public void testSetValue_escapedLiteralNewline() throws IOException {
+    // - preparation
+    // The space needs escaping in the key, the backslash needs escaping in any case.
+    final String key1= "my Key1";
+    final String value1= "my\\nvalue 1";
+
+    final String key2= "my\\Key2";
+    final String value2= "my\\value2";
+
+    final Properties javaUtilProperties= new Properties();
+    javaUtilProperties.setProperty(key1, value1);
+    javaUtilProperties.setProperty(key2, value2);
+
+    // assert our assumptions about the java.util.Properties implementation
+    assertThat(javaUtilProperties.size()).as("Check assumption about java.util.Properties size").isEqualTo(2);
+    assertThat(javaUtilProperties).containsOnlyKeys(key1, key2);
+    assertThat(javaUtilProperties.getProperty(key1)).as("Check assumption about java.util.Properties values").isEqualTo(value1);
+    assertThat(javaUtilProperties.getProperty(key2)).as("Check assumption about java.util.Properties values").isEqualTo(value2);
+
+    // - execution
+    final PropertyFile propertyFile= new PropertyFile();
+    propertyFile.setValue(key1, value1);
+    propertyFile.setValue(key2, value2);
+
+    // - validation
+    assertThat(propertyFile.propertiesSize()).isEqualTo(2);
+    assertThat(propertyFile.get(key1)).isEqualTo(value1);
+    assertThat(propertyFile.get(key2)).isEqualTo(value2);
+  }
+
+
+
+
   private File createTestFile(final String content) {
     return createTestFile(content, Charset.forName("UTF-8"));
   }

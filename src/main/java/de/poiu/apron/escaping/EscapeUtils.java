@@ -250,7 +250,12 @@ public class EscapeUtils {
   /**
    * Returns a copy of the given CharSequence where all characters that need to be
    * escaped to be used as a value in a .properties file are escaped.
-   * These are actually only newline characters that are translated to literal newlines.
+   * <p>
+   * The following conversions are done when escaping property values:
+   * <ul>
+   *  <li>newline characters are translated to literal newlines.</li>
+   *  <li>backslashes are escaped by a leading backslash</li>
+   * </ul>
    * <p>
    * Unicode values remain in their Unicode form and are not replaced by \\uXXXX unicode escape sequences.
    * This will be done when writing (if necessary)
@@ -264,12 +269,18 @@ public class EscapeUtils {
     for (int i=0; i < s.length(); i++) {
       final char c= s.charAt(i);
 
+      //FIXME: Should this be changed to a switch-statement now? Could be more readable.
+      //       Maybe this should be done when other characters need to be prependend by a backslash.
+      //       In that case we can use the same 'case'
       if (c == '\n') {
         sb.append('\\');
         sb.append('n');
       } else if (c == '\r') {
         sb.append('\\');
         sb.append('r');
+      } else if (c == '\\') {
+        sb.append('\\');
+        sb.append(c);
       } else {
         sb.append(c);
       }
@@ -288,6 +299,7 @@ public class EscapeUtils {
    *  <li>whitespace characters</li>
    *  <li>the comment characters '#' and '!'</li>
    *  <li>the assignment characters '=' and ':'</li>
+   *  <li>backslash characters</li>
    * </ul>
    * <p>
    * Unicode values remain in their Unicode form and are not replaced by \\uXXXX unicode escape sequences.
@@ -306,6 +318,7 @@ public class EscapeUtils {
         || c == '=' || c == ':'
         || c == '\n' || c =='\r'
         || c == '#' || c == '!'
+        || c == '\\'
         ) {
         sb.append('\\');
       }
