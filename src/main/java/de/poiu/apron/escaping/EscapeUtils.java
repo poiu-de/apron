@@ -154,6 +154,7 @@ public class EscapeUtils {
               sb.append(c);
               LOGGER.log(Level.SEVERE, "Found invalid unicode escape sequence {0}. No conversion will be done. Be aware that this file cannot be read by java.util.Properties! The escape sequence should be fixed!", s.subSequence(i, i + 6));
             }
+            continue;
           } else {
             //…otherwise just leave it as it is
             sb.append(c);

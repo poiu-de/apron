@@ -284,4 +284,13 @@ public class EscapeUtilsTest {
       + "#   multiple \r\n"
       + "#   lines\n");
   }
+
+
+  @Test
+  public void testUnescape_withUnicodeValuesAndRorN() {
+      assertThat(EscapeUtils.unescape("Die Kommunikation ist gest\\u00f6rt.").toString())
+        .isEqualTo("Die Kommunikation ist gestört.");
+      assertThat(EscapeUtils.unescape("\\u00c4ndern").toString())
+        .isEqualTo("Ändern");
+  }
 }

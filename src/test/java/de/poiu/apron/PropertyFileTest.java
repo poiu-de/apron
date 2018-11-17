@@ -904,6 +904,43 @@ public class PropertyFileTest {
 
 
   @Test
+  public void test_UnicodeEscapeAndRorN() throws IOException {
+    // - preparation
+    final File propertyFile= this.createTestFile(""
+      + " kommerror =  Die Kommunikation ist gest\\u00f6rt.\n"
+      + " btn.modify =  \\u00c4ndern\n"
+      + " rivers = Fl\\u00fcsse"
+      , ISO_8859_1
+    );
+
+    final Properties javaUtilProperties= new Properties();
+    try (final FileInputStream fis= new FileInputStream(propertyFile);) {
+      javaUtilProperties.load(fis);
+    }
+
+    // assert our assumptions about the java.util.Properties implementation
+    assertThat(javaUtilProperties.size()).as("Check assumption about java.util.Properties size").isEqualTo(3);
+    assertThat(javaUtilProperties).containsOnlyKeys("kommerror", "btn.modify", "rivers");
+    assertThat(javaUtilProperties.getProperty("kommerror")).as("Check assumption about java.util.Properties values").isEqualTo("Die Kommunikation ist gestört.");
+    assertThat(javaUtilProperties.getProperty("btn.modify")).as("Check assumption about java.util.Properties values").isEqualTo("Ändern");
+    assertThat(javaUtilProperties.getProperty("rivers")).as("Check assumption about java.util.Properties values").isEqualTo("Flüsse");
+
+    // - execution
+    final PropertyFile readPropertyFile= PropertyFile.from(propertyFile, ISO_8859_1);
+
+    // - validation
+    assertThat(readPropertyFile.propertiesSize()).isEqualTo(javaUtilProperties.size());
+    for (final Map.Entry<Object, Object> e : javaUtilProperties.entrySet()) {
+      final String key = (String) e.getKey();
+      final String value = (String) e.getValue();
+      assertThat(readPropertyFile.containsKey(key)).as("propertyFile contains key %s", key).isTrue();
+      assertThat(readPropertyFile.get(key)).as("key %s contains value %s", key, value).isEqualTo(value);
+    }
+  }
+
+
+
+  @Test
   public void testWritePropertyFile() throws IOException {
     // - preparation
     final File propertyFile= this.createTestFile(""
