@@ -384,6 +384,24 @@ public class PropertyFile {
 
 
   /**
+   * Returns the PropertyEntry for the given key.
+   * <p>
+   * The given key must be unescaped (the actual key), not the escaped version like in the
+   * actual .properties file (where spaces and other special characters need to be escaped).
+   * <p>
+   * The returned PropertyEntry will contain the <i>escaped</i> key and value!
+   *
+   * @param key the key for which to return the PropertyEntry
+   * @return the PropertyEntry for the given key or <code>null</code> if no PropertyEntry with the
+   *         given key exists.
+   * @since 2.0.1
+   */
+  public PropertyEntry getPropertyEntry(final String key) {
+    return this.propertyEntries.get(key);
+  }
+
+
+  /**
    * Reads a PropertyFile from the given file.
    * <p>
    * This methods assumes the encoding of the file to be UTF-8.
@@ -736,11 +754,12 @@ public class PropertyFile {
         final String unescapedKey= EscapeUtils.unescape(propertyEntry.getKey()).toString();
         if (existing.containsKey(unescapedKey)) {
           // …and the value is different…
+          final PropertyEntry existingEntry= existing.getPropertyEntry(unescapedKey);
           final String unescapedValue= EscapeUtils.unescape(propertyEntry.getValue()).toString();
-          final String existingUnescapedValue= EscapeUtils.unescape(existing.get(unescapedKey)).toString();
+          final String existingUnescapedValue= EscapeUtils.unescape(existingEntry.getValue()).toString();
           if (!existingUnescapedValue.equals(unescapedValue)) {
             // …update it
-            existing.setValue(unescapedKey, propertyEntry.getValue().toString());
+            existingEntry.setValue(propertyEntry.getValue());
           }
         } else {
           // …otherwise (if the key does not exist yet)

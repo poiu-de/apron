@@ -249,8 +249,8 @@ public class EscapeUtils {
 
   /**
    * Returns a copy of the given CharSequence where all characters that need to be
-   * escaped to be used as a value in a .properties file are escaped by a backslash.
-   * These are actually only newline characters.
+   * escaped to be used as a value in a .properties file are escaped.
+   * These are actually only newline characters that are translated to literal newlines.
    * <p>
    * Unicode values remain in their Unicode form and are not replaced by \\uXXXX unicode escape sequences.
    * This will be done when writing (if necessary)
@@ -264,19 +264,14 @@ public class EscapeUtils {
     for (int i=0; i < s.length(); i++) {
       final char c= s.charAt(i);
 
-      if (c == '\n' || c =='\r') {
+      if (c == '\n') {
         sb.append('\\');
-      }
-
-      sb.append(c);
-
-      // do not escape the \n in a \r\n sequence
-      if (c == '\r' && i + 1 < s.length()) {
-        final char nextChar= s.charAt(i + 1);
-        if (nextChar == '\n') {
-          sb.append(nextChar);
-          i++;
-        }
+        sb.append('n');
+      } else if (c == '\r') {
+        sb.append('\\');
+        sb.append('r');
+      } else {
+        sb.append(c);
       }
     }
 

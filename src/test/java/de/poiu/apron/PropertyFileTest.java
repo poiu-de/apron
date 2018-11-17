@@ -1466,6 +1466,53 @@ public class PropertyFileTest {
   }
 
 
+  /**
+   * This test verifies bug #3: https://github.com/hupfdule/apron/issues/3
+   */
+  @Test
+  public void testUpdate_LinebreakInNewValue() throws IOException {
+    // - preparation
+    final File propertyFile= this.createTestFile(""
+      + "keyA1 =  valueA1\n"
+    );
+    final PropertyFile readPropertyFile= PropertyFile.from(propertyFile);
+
+    // - execution
+    readPropertyFile.setValue("keyA1", "new Value with \nlinebreak");
+    readPropertyFile.update(propertyFile, ApronOptions.create().with(MissingKeyAction.COMMENT));
+
+    // - validation
+    final String newFileContent= toString(propertyFile);
+    assertThat(newFileContent).isEqualTo(""
+      + "keyA1 =  new Value with \\nlinebreak\n"
+    );
+  }
+
+
+  /**
+   * This test verifies bug #3: https://github.com/hupfdule/apron/issues/3
+   * It didn't trigger the bug (that only occurred on #update()
+   */
+  @Test
+  public void testOverwrite_LinebreakInNewValue() throws IOException {
+    // - preparation
+    final File propertyFile= this.createTestFile(""
+      + "keyA1 =  valueA1\n"
+    );
+    final PropertyFile readPropertyFile= PropertyFile.from(propertyFile);
+
+    // - execution
+    readPropertyFile.setValue("keyA1", "new Value with \nlinebreak");
+    readPropertyFile.overwrite(propertyFile, ApronOptions.create().with(MissingKeyAction.COMMENT));
+
+    // - validation
+    final String newFileContent= toString(propertyFile);
+    assertThat(newFileContent).isEqualTo(""
+      + "keyA1 =  new Value with \\nlinebreak\n"
+    );
+  }
+
+
   @Test
   public void testKeys() {
     // - preparation

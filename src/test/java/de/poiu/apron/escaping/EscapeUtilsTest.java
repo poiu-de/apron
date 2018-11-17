@@ -231,13 +231,13 @@ public class EscapeUtilsTest {
       .isEqualTo("value with whitespace");
 
     assertThat(EscapeUtils.escapePropertyValue("value with \nnewline").toString())
-      .isEqualTo("value with \\\nnewline");
+      .isEqualTo("value with \\nnewline");
 
     assertThat(EscapeUtils.escapePropertyValue("value with \rnewline").toString())
-      .isEqualTo("value with \\\rnewline");
+      .isEqualTo("value with \\rnewline");
 
     assertThat(EscapeUtils.escapePropertyValue("value with \r\nnewline").toString())
-      .isEqualTo("value with \\\r\nnewline");
+      .isEqualTo("value with \\r\\nnewline");
 
     assertThat(EscapeUtils.escapePropertyValue("#value with commentchar").toString())
       .isEqualTo("#value with commentchar");
@@ -248,6 +248,7 @@ public class EscapeUtilsTest {
     assertThat(EscapeUtils.escapePropertyValue("value with :=").toString())
       .isEqualTo("value with :=");
   }
+
 
   @Test
   public void testComment() {
