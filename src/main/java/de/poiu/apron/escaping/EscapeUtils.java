@@ -105,13 +105,13 @@ public class EscapeUtils {
    * Unescapes a given char sequence. The following unescaping will be done by this method:
    * <ul>
    *  <li>all \\uXXXX unicode escape sequences are replaced by the actual unicode value</li>
-   *  <li>all backslahes that escape characters that need no escaping are removed</li>
+   *  <li>all backslashes that escape characters that need no escaping are removed</li>
    *  <li>backslashes as the last character are removed</li>
    *  <li>literal newlines are replaced by real newlines</li>
    *  <li>whitespace after a newline is removed</li>
    * </ul>
    * <p>
-   * This methods does not throw an exception. If an invalid unicode escape sequence is found, an
+   * This method does not throw an exception. If an invalid unicode escape sequence is found, an
    * error will be logged and the invalid escape sequence will be left unmodified.
    * <p>
    * This method may be used for property keys as well as property values. There is no difference
