@@ -875,7 +875,9 @@ public class PropertyFileTest {
     final File propertyFile= this.createTestFile(""
       + " keyA1 =  value over multiple lines \\\n- linebreak ignored\n"
       + " keyA2 =  value over multiple lines \\n- literal linebreak remains\n"
-      + " keyA3 =  value over multiple lines \\n\\\n- both; literal remains");
+      + " keyA3 =  value over multiple lines \\n\\\n- both; literal remains\n"
+      + " keyA4 =  value over multiple lines \\\\n- literal linebreak remains\n"
+    );
 
     final Properties javaUtilProperties= new Properties();
     try (final FileInputStream fis= new FileInputStream(propertyFile);) {
@@ -883,11 +885,12 @@ public class PropertyFileTest {
     }
 
     // assert our assumptions about the java.util.Properties implementation
-    assertThat(javaUtilProperties.size()).as("Check assumption about java.util.Properties size").isEqualTo(3);
-    assertThat(javaUtilProperties).containsOnlyKeys("keyA1", "keyA2", "keyA3");
+    assertThat(javaUtilProperties.size()).as("Check assumption about java.util.Properties size").isEqualTo(4);
+    assertThat(javaUtilProperties).containsOnlyKeys("keyA1", "keyA2", "keyA3", "keyA4");
     assertThat(javaUtilProperties.getProperty("keyA1")).as("Check assumption about java.util.Properties values").isEqualTo("value over multiple lines - linebreak ignored");
     assertThat(javaUtilProperties.getProperty("keyA2")).as("Check assumption about java.util.Properties values").isEqualTo("value over multiple lines \n- literal linebreak remains");
     assertThat(javaUtilProperties.getProperty("keyA3")).as("Check assumption about java.util.Properties values").isEqualTo("value over multiple lines \n- both; literal remains");
+    assertThat(javaUtilProperties.getProperty("keyA4")).as("Check assumption about java.util.Properties values").isEqualTo("value over multiple lines \\n- literal linebreak remains");
 
     // - execution
     final PropertyFile readPropertyFile= PropertyFile.from(propertyFile);
@@ -937,7 +940,6 @@ public class PropertyFileTest {
       assertThat(readPropertyFile.get(key)).as("key %s contains value %s", key, value).isEqualTo(value);
     }
   }
-
 
 
   @Test
@@ -1432,6 +1434,34 @@ public class PropertyFileTest {
       + "#          lines\n"
       + "keyA3 : value A3\n"
       + "keyA4 = NEW value A4\n"
+    );
+  }
+
+
+  /**
+   * This test verifies bug #4: https://github.com/hupfdule/apron/issues/4
+   */
+  @Test
+  public void testUpdate_CompareUnescapedValues() throws IOException {
+    // - preparation
+    final File propertyFile= this.createTestFile(""
+      + "keyA2 = value A2 \\n"
+      + "          with literal \\n"
+      + "          linebreaks\n"
+    );
+    final PropertyFile readPropertyFile= PropertyFile.from(propertyFile);
+
+    // - execution
+    final String origValue= readPropertyFile.get("keyA2");
+    readPropertyFile.setValue("keyA2", origValue);
+    readPropertyFile.update(propertyFile, ApronOptions.create().with(MissingKeyAction.COMMENT));
+
+    // - validation
+    final String newFileContent= toString(propertyFile);
+    assertThat(newFileContent).isEqualTo(""
+      + "keyA2 = value A2 \\n"
+      + "          with literal \\n"
+      + "          linebreaks\n"
     );
   }
 

@@ -737,7 +737,8 @@ public class PropertyFile {
         if (existing.containsKey(unescapedKey)) {
           // …and the value is different…
           final String unescapedValue= EscapeUtils.unescape(propertyEntry.getValue()).toString();
-          if (!existing.get(unescapedKey).equals(unescapedValue)) {
+          final String existingUnescapedValue= EscapeUtils.unescape(existing.get(unescapedKey)).toString();
+          if (!existingUnescapedValue.equals(unescapedValue)) {
             // …update it
             existing.setValue(unescapedKey, propertyEntry.getValue().toString());
           }
