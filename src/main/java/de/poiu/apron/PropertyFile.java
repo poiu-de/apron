@@ -21,8 +21,6 @@ import de.poiu.apron.entry.PropertyEntry;
 import de.poiu.apron.escaping.EscapeUtils;
 import de.poiu.apron.io.PropertyFileReader;
 import de.poiu.apron.io.PropertyFileWriter;
-import de.poiu.apron.reformatting.AttachCommentsTo;
-import de.poiu.apron.reformatting.InvalidFormatException;
 import de.poiu.apron.reformatting.ReformatOptions;
 import de.poiu.apron.reformatting.Reformatter;
 import java.io.File;
