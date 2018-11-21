@@ -1,6 +1,14 @@
 Apron changelog
 ===============
 
+Version 2.0.1 - 2018-11-21
+--------------------------
+
+  - Escape newlines to literal newlines (#3)
+  - When checking for value changes compare unescaped values (#4)
+	- Escape backslashes when escaping (#5)
+
+
 Version 2.0.0 - 2018-11-09
 --------------------------
 
