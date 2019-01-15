@@ -13,3 +13,7 @@ Release x.x.x
  - Javadoc mit Java 11 generieren. Das würde multi-module build erfordern
  - java.util.Properties ableiten (wichtig?)
    PropertyFile.asProperties():Properties (Wrapper)
+ - PropertyFile#appendEntry(...) public machen? Ist ja auch in der README
+   beschrieben
+- PropertyFile#appendEntry(String) als Alternative zu
+  PropertyFile#appendEntry(BasicEntry)?
