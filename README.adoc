@@ -174,13 +174,13 @@ propertyFile.appendEntry(new BasicEntry("# A new key-value pair follows");
 // Add a new key-value pair to this PropertyFile
 // Be aware that by using appendEntry() it could be possible to insert
 // duplicate keys into this PropertyFile. The behaviour is then undefined.
-// It is the responsibility of the user of PropertyFile to avoid this
+// It is the responsibility of the user of PropertyFile to avoid this.
 // PropertyEntries contain their content in _escaped_ form. Therefore the
 // Backslashes and newline character are not really part of the key and value
 propertyFile.appendEntry(new PropertyEntry("a new \\\nkey", "a new \\\nvalue");
 
 
-// key-value pairs a _unescaped_. Therefore the following method call
+// key-value pairs are _unescaped_. Therefore the following method call
 // will return the string "a new value"
 final String myNewValue= propertyFile.get("a new key");
 
@@ -269,10 +269,10 @@ final ReformatOptions reorderOptions= ReformatOptions.create()
 // Create a Reformatter with the specified ReformatOptions
 final Reformatter reformatter= new Reformatter(reorderOptions);
 
-// Reorder a single .properties alphabetically according to the specified ReformatOptions
+// Reorder a single .properties file alphabetically according to the specified ReformatOptions
 reformatter.reorderByKey(new File("myproperties.properties"));
 
-// Reorder a single .properties files according to the order in another .properties file.
+// Reorder a single .properties file according to the order in another .properties file.
 // This time we want to reorder comments and empty lines along with the key-value pair that
 // follows them. This is possible by specifying a ReformatOptions object when calling the
 // corresponding reorder method.
