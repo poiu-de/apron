@@ -55,7 +55,7 @@ Some examples for usage scenarios of Apron are:
    manually edited by a user as well as modified by the application itself
    (e.g. via a configuration dialog). The manual modifications (like the
    order of entries, as well as comments, empty lines and even the
-   formatting of entries will remain.
+   formatting of entries) will remain.
 
  - Exporting and importing Java i18n resource bundles for translation (like
    {kilt-homepage}[Kilt] does).
