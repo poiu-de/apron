@@ -298,7 +298,7 @@ their actual implementation.
 
 For log4j2 this can be done by including the `log4j2-jul` and `log4j2-api` jar
 (and some implemention, e.g. `log4j2-core`) and setting the system property
-`java.util.logging.LogManager` to `org.apache.logging.log4j.jul.LogManager`. 
+`java.util.logging.manager` to `org.apache.logging.log4j.jul.LogManager`. 
 See {log4j2-jul-bridge} for more information.
 
 For slf4j this can be done by including the `jul-to-slf4j` jar (and some
