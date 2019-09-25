@@ -85,7 +85,7 @@ To use Apron in a maven based project use the following maven coordinates:
       <groupId>de.poiu.apron</groupId>
       <artifactId>apron</artifactId>
       <version>{apron-version}</version>
-    <dependency>
+    </dependency>
 ----
 
 Otherwise download the jar-file of Apron from the {download-page}[Download
