@@ -179,10 +179,11 @@ public class PropertyFile {
    *
    * @param key the key
    * @param value the (new) value for the given key
+   * @since 2.1.0
    */
   // The given strings must already be unescaped.
   // The corresponding PropertyEntry will be updated or created with the escaped values.
-  public void setValue(final String key, final String value) {
+  public void set(final String key, final String value) {
     if (this.propertyEntries.containsKey(key)) {
       final PropertyEntry propertyEntry= this.propertyEntries.get(key);
       final String escapedValue= EscapeUtils.escapePropertyValue(value).toString();
@@ -195,6 +196,22 @@ public class PropertyFile {
       this.propertyEntries.put(key, entry);
       this.entries.add(entry);
     }
+  }
+
+  /**
+   * Sets the value for a specific key.
+   * If this PropertyFile already contains the given key, its value will get updated.
+   * Otherwise a new entry will be appended to the end of thie PropertyFile.
+   *
+   * @param key the key
+   * @param value the (new) value for the given key
+   * @deprecated Use {@link #set(java.lang.String, java.lang.String)} instead
+   */
+  // The given strings must already be unescaped.
+  // The corresponding PropertyEntry will be updated or created with the escaped values.
+  @Deprecated
+  public void setValue(final String key, final String value) {
+    this.set(key, value);
   }
 
 
