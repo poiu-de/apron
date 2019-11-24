@@ -2,6 +2,7 @@ Apron
 =====
 Marco Herrn <marco@mherrn.de>
 2018-05-14
+:compat-mode!:
 :toc:
 :homepage: https://github.com/hupfdule/apron
 :download-page: https://github.com/hupfdule/apron/releases
