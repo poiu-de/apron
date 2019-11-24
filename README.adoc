@@ -152,7 +152,8 @@ the key-value pairs remains the same.
 The behaviour when writing a PropertyFile can be altered by providing it an
 optional `ApronOptions` object.
 
-This is an example for using a PropertyFile:
+This is an example for a typical usage of PropertyFile as a replacement for
+`java.util.Properties`:
 
 [source,java]
 ----
@@ -163,14 +164,23 @@ final PropertyFile propertyFile= PropertyFile.from(
 // Read the value of the key "someKey"
 final String someValue= propertyFile.get("someKey");
 
-// Read all Entries (that means BasicEntries as well as PropertyEntries)
-final List<Entry> entries= propertyFile.getAllEntries();
-
 // Set the value of "someKey" to a new value
 propertyFile.set("someKey", "aNewValue");
 
+// Write the PropertyFile back to file by only updating the modified values
+propertyFile.update(new File("application.properties"));
+----
+
+This is an example for a more advanced usage of PropertyFile that allows
+acessing comment lines and explicitly formatted (escaped) entries:
+
+[source,java]
+----
+// Read all Entries (that means BasicEntries as well as PropertyEntries)
+final List<Entry> entries= propertyFile.getAllEntries();
+
 // Add a comment line to this PropertyFile
-propertyFile.appendEntry(new BasicEntry("# A new key-value pair follows");
+propertyFile.appendEntry(new BasicEntry("# A new key-value pair follows"));
 
 // Add a new key-value pair to this PropertyFile
 // Be aware that by using appendEntry() it could be possible to insert
@@ -178,16 +188,16 @@ propertyFile.appendEntry(new BasicEntry("# A new key-value pair follows");
 // It is the responsibility of the user of PropertyFile to avoid this.
 // PropertyEntries contain their content in _escaped_ form. Therefore the
 // Backslashes and newline character are not really part of the key and value
-propertyFile.appendEntry(new PropertyEntry("a new \\\nkey", "a new \\\nvalue");
-
+propertyFile.appendEntry(new PropertyEntry("a new \\\nkey", "a new \\\nvalue"));
 
 // key-value pairs are _unescaped_. Therefore the following method call
 // will return the string "a new value"
 final String myNewValue= propertyFile.get("a new key");
 
-// Specify an ApronOptions object that requires writing in UTF-8.
-// This is actually not necessary since UTF-8 is the default.
-final ApronOptions apronOptions= ApronOptions.create().with(UTF_8);
+// Specify an ApronOptions object that writes with ISO-8859-1 encoding
+// instead of the default UTF-8.
+final ApronOptions apronOptions= ApronOptions.create()
+  .with(java.nio.charset.StandardCharsets.ISO_8859_1);
 
 // Write the PropertyFile back to file by only updating the modified values
 propertyFile.update(new File("application.properties"), apronOptions);
