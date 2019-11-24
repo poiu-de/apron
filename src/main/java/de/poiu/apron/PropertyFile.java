@@ -133,7 +133,7 @@ public class PropertyFile {
    *
    * @param entry the new Entry to append
    */
-  void appendEntry(final Entry entry) {
+  public void appendEntry(final Entry entry) {
     Objects.requireNonNull(entry, "entry may not be null");
 
     if (entry instanceof BasicEntry) {
@@ -151,7 +151,7 @@ public class PropertyFile {
    *
    * @param entry the new Entry to append
    */
-  void appendEntry(final BasicEntry entry) {
+  public void appendEntry(final BasicEntry entry) {
     this.entries.add(entry);
   }
 
@@ -163,7 +163,7 @@ public class PropertyFile {
    *
    * @param entry the new Entry to append
    */
-  void appendEntry(final PropertyEntry entry) {
+  public void appendEntry(final PropertyEntry entry) {
     final String key= EscapeUtils.unescape(entry.getKey()).toString();
     //FIXME: What to do if the of this entry already exists?
     //       Throw a DuplicateKeyException?
