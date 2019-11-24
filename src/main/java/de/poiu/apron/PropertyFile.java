@@ -21,6 +21,7 @@ import de.poiu.apron.entry.PropertyEntry;
 import de.poiu.apron.escaping.EscapeUtils;
 import de.poiu.apron.io.PropertyFileReader;
 import de.poiu.apron.io.PropertyFileWriter;
+import de.poiu.apron.java.util.Properties;
 import de.poiu.apron.reformatting.ReformatOptions;
 import de.poiu.apron.reformatting.Reformatter;
 import java.io.File;
@@ -63,6 +64,7 @@ import java.util.stream.Stream;
  * The map contains the <i>escaped</i> key-value-pairs like a {@link java.util.Properties} object.
  * <p>
  * Be aware that this class is not threadsafe!
+ * <p>
  *
  * @author mherrn
  */
@@ -123,6 +125,19 @@ public class PropertyFile {
     });
 
     return map;
+  }
+
+
+  /**
+   * Returns a new java.util.Properties wrapper around this PropertyFile.
+   *
+   * This is actually the same as calling <code>new Properties(propertyFile)</code>.
+   *
+   * @return a wrapper around this PropertyFile
+   * @since 2.1.0
+   */
+  public Properties asProperties() {
+    return new Properties(this);
   }
 
 
@@ -413,6 +428,42 @@ public class PropertyFile {
    */
   public PropertyEntry getPropertyEntry(final String key) {
     return this.propertyEntries.get(key);
+  }
+
+
+  /**
+   * Creates a new PropertyFile as an exact copy of the given PropertyFile.
+   * <p>
+   * If the given PropertyFile is null this will create a new empty PropertyFile.
+   *
+   * @param propertyFile the PropertyFile to copy
+   * @return a new PropertyFile with the same content as the given one
+   * @since 2.1.0
+   */
+  public static PropertyFile from(final PropertyFile propertyFile) {
+    final PropertyFile copy= new PropertyFile();
+
+    if (propertyFile == null) {
+      return copy;
+    }
+
+    for (Entry e : propertyFile.getAllEntries()) {
+      if (e instanceof BasicEntry) {
+        copy.appendEntry(new BasicEntry(e.toCharSequence()));
+      } else if (e instanceof PropertyEntry) {
+        final PropertyEntry pe= (PropertyEntry) e;
+        copy.appendEntry(new PropertyEntry(
+          pe.getLeadingWhitespace(),
+          pe.getKey(),
+          pe.getSeparator(),
+          pe.getValue(),
+          pe.getLineEnding()));
+      } else {
+        throw new RuntimeException("Invalid Entry type: "+e.getClass().getName());
+      }
+    }
+
+    return copy;
   }
 
 

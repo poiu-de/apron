@@ -1,6 +1,11 @@
 Apron changelog
 ===============
 
+Version 2.1.0 - 2019-??-??
+--------------------------
+
+  - Provide java.util.Properties wrapper around PropertyFile
+
 Version 2.0.1 - 2018-11-21
 --------------------------
 

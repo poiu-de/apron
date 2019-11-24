@@ -943,6 +943,58 @@ public class PropertyFileTest {
 
 
   @Test
+  public void testClonePropertyFile() {
+    // - preparation
+    final PropertyFile orig= new PropertyFile();
+    orig.appendEntry(new BasicEntry("# some Comment\n"));
+    orig.appendEntry(new PropertyEntry(" \t", "BmyKey1", " = ", "myValue1", "\n"));
+    orig.appendEntry(new BasicEntry("\n"));
+    orig.appendEntry(new BasicEntry("# another Comment\n"));
+    orig.appendEntry(new PropertyEntry("\t\t", "AmyKey2", ": ", "myValue2", "\rn"));
+
+    // Check that the clone equals the original
+
+    // - execution
+    final PropertyFile copy= PropertyFile.from(orig);
+
+    // - validation
+    assertThat(copy.getAllEntries()).isEqualTo(orig.getAllEntries());
+
+    // Check that modifications in the clone do not affect the original
+
+    // - execution
+    copy.reorderByKey();
+    copy.getAllEntries().remove(0);
+    copy.setValue("AmyKey1", "a changed value");
+    copy.appendEntry(new BasicEntry("# Closing comment\n"));
+
+    // - verification
+    assertThat(orig.entriesSize()).isEqualTo(5);
+    assertThat(orig.getAllEntries()).containsExactly(
+      new BasicEntry("# some Comment\n"),
+      new PropertyEntry(" \t", "BmyKey1", " = ", "myValue1", "\n"),
+      new BasicEntry("\n"),
+      new BasicEntry("# another Comment\n"),
+      new PropertyEntry("\t\t", "AmyKey2", ": ", "myValue2", "\rn")
+    );
+  }
+
+
+  @Test
+  public void testCloneFromNull() {
+    // - preparation
+    final PropertyFile orig= null;
+
+    // - execution
+    final PropertyFile clone= PropertyFile.from(orig);
+
+    // - verification
+    assertThat(clone).isNotNull();
+    assertThat(clone.getAllEntries()).hasSize(0);
+  }
+
+
+  @Test
   public void testWritePropertyFile() throws IOException {
     // - preparation
     final File propertyFile= this.createTestFile(""
