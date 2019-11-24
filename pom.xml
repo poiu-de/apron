@@ -63,20 +63,33 @@
       <plugins>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-enforcer-plugin</artifactId>
+          <version>1.4.1</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-source-plugin</artifactId>
+          <version>3.2.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-deploy-plugin</artifactId>
+          <version>3.8.2</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-jar-plugin</artifactId>
+          <version>3.2.0</version>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
           <artifactId>maven-javadoc-plugin</artifactId>
           <version>3.1.1</version>
-          <configuration>
-            <!-- see: https://stackoverflow.com/a/49477048/572645 -->
-            <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
-
-            <!--additionalOptions>-html5</additionalOptions-->
-            <doclet>nl.talsmasoftware.umldoclet.UMLDoclet</doclet>
-            <docletArtifact>
-              <groupId>nl.talsmasoftware</groupId>
-              <artifactId>umldoclet</artifactId>
-              <version>2.0.7</version>
-            </docletArtifact>
-          </configuration>
+        </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-release-plugin</artifactId>
+          <version>2.5.3</version>
         </plugin>
         <plugin>
           <groupId>org.apache.maven.plugins</groupId>
@@ -88,14 +101,42 @@
           <artifactId>maven-project-info-reports-plugin</artifactId>
           <version>3.0.0</version>
         </plugin>
+        <plugin>
+          <groupId>org.apache.maven.plugins</groupId>
+          <artifactId>maven-gpg-plugin</artifactId>
+          <version>1.6</version>
+        </plugin>
+        <plugin>
+          <groupId>org.sonatype.plugins</groupId>
+          <artifactId>nexus-staging-maven-plugin</artifactId>
+          <version>1.6.8</version>
+        </plugin>
       </plugins>
     </pluginManagement>
 
     <plugins>
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-enforcer-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>enforce-maven</id>
+            <goals>
+              <goal>enforce</goal>
+            </goals>
+            <configuration>
+              <rules>
+                <requireMavenVersion>
+                  <version>3.0.5</version>
+                </requireMavenVersion>
+              </rules>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-jar-plugin</artifactId>
-        <version>3.2.0</version>
         <configuration>
           <archive>
             <manifest>
@@ -111,8 +152,24 @@
 
       <plugin>
         <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-javadoc-plugin</artifactId>
+        <configuration>
+          <!-- see: https://stackoverflow.com/a/49477048/572645 -->
+          <javadocExecutable>${java.home}/bin/javadoc</javadocExecutable>
+
+          <!--additionalOptions>-html5</additionalOptions-->
+          <doclet>nl.talsmasoftware.umldoclet.UMLDoclet</doclet>
+          <docletArtifact>
+            <groupId>nl.talsmasoftware</groupId>
+            <artifactId>umldoclet</artifactId>
+            <version>2.0.7</version>
+          </docletArtifact>
+        </configuration>
+      </plugin>
+
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
         <artifactId>maven-release-plugin</artifactId>
-        <version>2.5.3</version>
         <configuration>
           <autoVersionSubmodules>true</autoVersionSubmodules>
           <useReleaseProfile>false</useReleaseProfile>
@@ -124,7 +181,6 @@
       <plugin>
         <groupId>org.sonatype.plugins</groupId>
         <artifactId>nexus-staging-maven-plugin</artifactId>
-        <version>1.6.8</version>
         <extensions>true</extensions>
         <configuration>
           <serverId>ossrh</serverId>
@@ -156,7 +212,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-source-plugin</artifactId>
-            <version>3.2.0</version>
             <executions>
               <execution>
                 <id>attach-sources</id>
@@ -181,7 +236,6 @@
           <plugin>
             <groupId>org.apache.maven.plugins</groupId>
             <artifactId>maven-gpg-plugin</artifactId>
-            <version>1.6</version>
             <executions>
               <execution>
                 <id>sign-artifacts</id>
