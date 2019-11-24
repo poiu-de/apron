@@ -4,32 +4,36 @@ Thanks for your interest in contributing to Apron.
 
 == How to contribute
 
-You can of course fork the project, do your intended changes and create a pull request.
-But to get the maximum benefit by contributing it would be good to get in <<Contact,contact with us>> and telling us about your intentions
-This helps avoiding duplicate work or your changes being refused for some reason.
+If you intent to do larger changes it is advisable to open an
+https://github.com/hupfdule/kilt/issues[Issue] issue first, describing the
+problem and the intentions. This helps reducing wasted effort and
+duplicated work by allowing This helps avoiding duplicate work or your
+changes being refused for some reason.  to discuss the change first.
+
+Of course you are free to just fork the project, do the intented changes
+and create a pull request.
 
 == What to contribute
 
 === Website
 
-What is currently missing is a useful website. Anyone with some skills in web design who is willing to contribute 
-to such a website is highly welcome. 
+What is currently missing is a useful website. Anyone with some skills in
+web design who is willing to contribute to such a website is highly
+welcome.
 
 === Finding bugs
 
-Of course Apron has bugs. If you find them please file an https://github.com/hupfdule/apron/issues[Issue] so we can resolve them.
+Of course Apron has bugs. If you find them please file an
+https://github.com/hupfdule/apron/issues[Issue] so they can be resolved.
+
+Preparing pull request to solve issues is also highly welcome, of course.
 
 === Writing code
 
-Before writing some code you should definitely <<Contact,contact us>> before writing anything. 
-This allows us to find out whether your contribution can be included in Apron and possibly saves you some fruitless work.
+When writing some code please follow our
+https://hupfdule.github.io/styleguide/javaguide.html[code conventions].
 
-When writing some code please follow our https://hupfdule.github.io/styleguide/javaguide.html[code conventions].
-
-Please structure your commits logically and respect the original formatting.
-Do not change formattings unrelated to any functional changes, even if the existing formatting violates the styleguide.
-To do such formatting changes, please prepare a separate pull request.
-
-== Contact
-
-To contact us, please write an email to apron@poiu.de.
+Please structure your commits logically and respect the original
+formatting.  Do not change formattings unrelated to any functional changes,
+even if the existing formatting violates the styleguide.  To do such
+formatting changes, please prepare a separate pull request.
