@@ -3,8 +3,8 @@ language: java
 dist: trusty
 
 jdk:
-  - oraclejdk8
-  - openjdk8
+  - oraclejdk11
+  - oraclejdk-ea
   - openjdk11
   - openjdk12
   - openjdk13
