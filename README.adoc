@@ -17,7 +17,7 @@ Marco Herrn <marco@mherrn.de>
 [.float-group]
 --
 image:apron-icon.svg[Apron,role="right", width="75"]
-Apron - Advanced Properties 
+Apron - Advanced Properties
 
 Read and write Java .properties files in a more sane manner.
 --
@@ -139,7 +139,7 @@ provides 3 methods (each in two variants) for doing so:
     Update an existing .properties file with the values in the written
     PropertyFile.
  save::
-    Use either the above mentioned overwrite method if the given file does 
+    Use either the above mentioned overwrite method if the given file does
     not exist or the update method if the file already exists.
 
 The most interesting method is the `update` method, since this
@@ -213,7 +213,7 @@ Since version 2.0.0 Apron provides a `de.poiu.apron.reformatting.Reformatter`
 class that allows reformatting and reordering the content of .properties
 files.
 
-The specific behaviour when reformatting and reordering can be specified 
+The specific behaviour when reformatting and reordering can be specified
 via a `de.poiu.apron.reformatting.ReformatOptions` object.
 
 For convenience the `de.poiu.apron.PropertyFile` class provides some methods
@@ -294,12 +294,69 @@ reformatter.reorderByTemplate(
 );
 ----
 
+
+`java.util.Properties` wrapper
+------------------------------
+
+Since version 2.1.0 Apron provides a `de.poiu.apron.java.util.Properties`
+class as a wrapper to be used as a drop-in replacement where a
+`java.util.Properties` object is required.
+
+This wrapper derives from `java.util.Properties`, but uses an Apron
+`PropertyFile` as the actual implementation.
+
+
+=== Example
+
+To use it create it either via
+
+[source,java]
+----
+de.poiu.apron.PropertyFile propertyFile= …
+de.poiu.apron.java.util.Properties properties=
+  new de.poiu.apron.java.util.Properties(propertyFile);
+----
+
+or via
+
+[source,java]
+----
+de.poiu.apron.PropertyFile propertyFile= …
+de.poiu.apron.java.util.Properties properties= propertyFile.asProperties();
+----
+
+All access via the `properties` object will then access to the
+`propertyFile` object. Both objects can be used interchangebly to access
+the actual contents.
+
+
+=== Differences to `java.util.Properties`
+
+The wrapper tries to fulfil the `java.util.Properties` API as good as
+possible. However there are a few differences:
+
+- `java.util.Properties` is derived from Hashtable and therefore non-String
+  keys and values can be stored in it (although that is highly
+  discouraged). As Aprons `PropertyFile` is not derived from Hashtable it
+  doesn't share this flaw. Therefore trying to use any other objects than
+  Strings as keys or values will fail.
+
+- Aprons `PropertyFile` only supports key-value-based `.properties` files.
+  As `java.util.Properties` also provides methods to read and write to XML
+  files and those formats are not supported by Apron, the corresponding
+  methods will always throw an UnsupportedOperationException.
+
+- `java.util.Properties` being derived from Hashtable is thread-safe.
+  However Aprons `PropertyFile` is not thread-safe and therefore this
+  wrapper is also not thread-safe.
+
+
 Logging
 -------
 
 There are a few cases this library issues some logging statements (when
 closing a writer didn't succeed and if an invalid unicode sequence was
-found that will be left as is). 
+found that will be left as is).
 Those few logging statements don't justify a dependency on a logging
 framework. Therefore we just use java.util.logging for that purpose.
 
@@ -309,11 +366,11 @@ their actual implementation.
 
 For log4j2 this can be done by including the `log4j2-jul` and `log4j2-api` jar
 (and some implemention, e.g. `log4j2-core`) and setting the system property
-`java.util.logging.manager` to `org.apache.logging.log4j.jul.LogManager`. 
+`java.util.logging.manager` to `org.apache.logging.log4j.jul.LogManager`.
 See {log4j2-jul-bridge} for more information.
 
 For slf4j this can be done by including the `jul-to-slf4j` jar (and some
-implementation, e.g. `logback`) and programmatically calling 
+implementation, e.g. `logback`) and programmatically calling
 
 [source,java]
 ----
