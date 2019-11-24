@@ -15,7 +15,7 @@
  */
 package de.poiu.apron.reformatting;
 
-import de.poiu.apron.*;
+import de.poiu.apron.UnicodeHandling;
 import java.nio.charset.Charset;
 import java.util.Objects;
 
@@ -23,7 +23,7 @@ import static java.nio.charset.StandardCharsets.UTF_8;
 
 
 /**
- * Holder object to encapsulate optional parameters when reformatting {@link PropertyFile PropertyFiles}
+ * Holder object to encapsulate optional parameters when reformatting {@link de.poiu.apron.PropertyFile PropertyFiles}
  * via {@link de.poiu.apron.reformatting.Reformatter}.
  * <p>
  * Be aware that not all combinations of options make sense in all cases. For example a
