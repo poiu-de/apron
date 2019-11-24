@@ -1,10 +1,17 @@
 Apron changelog
 ===============
 
-Version 2.1.0 - 2019-??-??
+Version 2.1.0 - 2019-12-20
 --------------------------
 
+  - Provide JPMS module-info to be used in JPMS modularized applications
+    The module-info will only be used by Java 9+. All other classes are
+    still compatible with Java 8.
   - Provide java.util.Properties wrapper around PropertyFile
+  - Make `appendEntry` methods public (#7)
+  - Replace `setValue` method with `set`. `setValue` still exists, but is
+    deprecated from now on. (#8)
+
 
 Version 2.0.1 - 2018-11-21
 --------------------------
