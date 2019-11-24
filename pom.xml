@@ -102,6 +102,9 @@
               <addDefaultImplementationEntries>true</addDefaultImplementationEntries>
               <addDefaultSpecificationEntries>true</addDefaultSpecificationEntries>
             </manifest>
+            <manifestEntries>
+              <Automatic-Module-Name>de.poiu.apron</Automatic-Module-Name>
+            </manifestEntries>
           </archive>
         </configuration>
       </plugin>
