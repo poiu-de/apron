@@ -12,7 +12,7 @@ Marco Herrn <marco@mherrn.de>
 :log4j2-jul-bridge: https://logging.apache.org/log4j/2.x/log4j-jul/index.html
 :slf4j-jul-bridge: https://www.slf4j.org/legacy.html#jul-to-slf4j
 :source-highlighter: prettify
-:apron-version: 2.0.1
+:apron-version: 2.1.0
 
 [.float-group]
 --
