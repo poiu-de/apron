@@ -6,10 +6,10 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
-    
+
     strategy:
       matrix:
-        java: [9, 10, 11, 12, 13, ea]
+        java: [9, 10, 11, 12, 13, 14]
 
     steps:
     - uses: actions/checkout@v1
