@@ -54,9 +54,9 @@ public class PropertyFileTest {
       + "keyA1=valueA1\n"
       + " keyA2  =  valueA2\n"
       + "\tkeyA3\t=\tvalue A3\t\n"
-      + "keyA4 = very long\\\n"
-      + "value A4 over \\\n"
-      + "multiple lines\n"
+      + "keyA4 = very long\\\r\n"
+      + "value A4 over \\\r\n"
+      + "multiple lines\r\n"
       + "        \n"
       + "keyB1:valueB1\n"
       + " keyB2 : valueB2\n"
@@ -157,7 +157,7 @@ public class PropertyFileTest {
     // - preparation
     final File propertyFile= this.createTestFile(""
       + "   keyA1 =  my very \t \\\n"
-      + "   long value that \\\n"
+      + "   long value that \\\r\n"
       + "   \tspans several lines = \\\n"
       + " and contains = characters \t \n"
       + "keyA2 = some simple value \t ");
