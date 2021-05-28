@@ -18,6 +18,8 @@ package de.poiu.apron;
 import de.poiu.apron.entry.BasicEntry;
 import de.poiu.apron.entry.Entry;
 import de.poiu.apron.entry.PropertyEntry;
+import org.junit.Test;
+
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -33,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
-import org.junit.Test;
 
 import static java.nio.charset.StandardCharsets.ISO_8859_1;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -54,9 +55,9 @@ public class PropertyFileTest {
       + "keyA1=valueA1\n"
       + " keyA2  =  valueA2\n"
       + "\tkeyA3\t=\tvalue A3\t\n"
-      + "keyA4 = very long\\\r\n"
-      + "value A4 over \\\r\n"
-      + "multiple lines\r\n"
+      + "keyA4 = very long\\\n"
+      + "value A4 over \\\n"
+      + "multiple lines\n"
       + "        \n"
       + "keyB1:valueB1\n"
       + " keyB2 : valueB2\n"
@@ -157,7 +158,7 @@ public class PropertyFileTest {
     // - preparation
     final File propertyFile= this.createTestFile(""
       + "   keyA1 =  my very \t \\\n"
-      + "   long value that \\\r\n"
+      + "   long value that \\\n"
       + "   \tspans several lines = \\\n"
       + " and contains = characters \t \n"
       + "keyA2 = some simple value \t ");
@@ -1938,9 +1939,6 @@ public class PropertyFileTest {
     assertThat(propertyFile.get(key1)).isEqualTo(value1);
     assertThat(propertyFile.get(key2)).isEqualTo(value2);
   }
-
-
-
 
   private File createTestFile(final String content) {
     return createTestFile(content, Charset.forName("UTF-8"));

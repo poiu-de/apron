@@ -18,6 +18,8 @@ package de.poiu.apron.io;
 import de.poiu.apron.entry.BasicEntry;
 import de.poiu.apron.entry.Entry;
 import de.poiu.apron.entry.PropertyEntry;
+import org.junit.Test;
+
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -25,7 +27,6 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
-import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -425,6 +426,67 @@ public class PropertyFileReaderTest {
     assertThat(readEntries.get(1)).isEqualTo(new PropertyEntry("   ", "\\ ", "   ", "", "\n"));
   }
 
+  /**
+   * This test verifies bug #11: https://github.com/hupfdule/apron/issues/11
+   * @throws IOException
+   */
+  @Test
+  public void test_CrLfEndings() throws IOException {
+    // - preparation
+    final File propertyFile= this.createTestFile(""
+        + "keyA1=valueA1\n"
+        + " keyA2  =  valueA2\n"
+        + "\tkeyA3\t=\tvalue A3\t\n"
+        + "keyA4 = very long\\\r\n"
+        + "value A4 over \\\r\n"
+        + "multiple lines\r\n"
+        + "        \n"
+        + "keyB1:valueB1\n"
+        + " keyB2 : valueB2\n"
+        + "\t keyB3\t:\t value B3 \n"
+        + "keyB4 : very long\\\n"
+        + "value B4 over \\\n"
+        + "multiple lines\\\n"
+        + "\n"
+        + "keyC1 valueC1\n"
+        + "  keyC2   valueC2\n"
+        + "\t keyC3\t\tvalue C3 \n"
+        + "keyC4   very long\\\n"
+        + "value C4 over \\\n"
+        + "\t \tmultiple lines");
+
+    // - execution
+    final List<String> readEntries= new ArrayList<>();
+    try (final PropertyFileReader reader= new PropertyFileReader(propertyFile);) {
+      Entry entry;
+      while ((entry= reader.readEntry()) != null) {
+        readEntries.add(entry.toCharSequence().toString());
+      }
+    }
+
+    // - validation
+    assertThat(readEntries.size()).isEqualTo(13);
+    assertThat(readEntries.get(0)).isEqualTo("keyA1=valueA1\n");
+    assertThat(readEntries.get(1)).isEqualTo(" keyA2  =  valueA2\n");
+    assertThat(readEntries.get(2)).isEqualTo("\tkeyA3\t=\tvalue A3\t\n");
+    assertThat(readEntries.get(3)).isEqualTo("keyA4 = very long\\\r\n" +
+        "value A4 over \\\r\n" +
+        "multiple lines\r\n");
+    assertThat(readEntries.get(4)).isEqualTo("        \n");
+    assertThat(readEntries.get(5)).isEqualTo("keyB1:valueB1\n");
+    assertThat(readEntries.get(6)).isEqualTo(" keyB2 : valueB2\n");
+    assertThat(readEntries.get(7)).isEqualTo("\t keyB3\t:\t value B3 \n");
+    assertThat(readEntries.get(8)).isEqualTo("keyB4 : very long\\\n" +
+        "value B4 over \\\n" +
+        "multiple lines\\\n" +
+        "\n");
+    assertThat(readEntries.get(9)).isEqualTo("keyC1 valueC1\n");
+    assertThat(readEntries.get(10)).isEqualTo("  keyC2   valueC2\n");
+    assertThat(readEntries.get(11)).isEqualTo("\t keyC3\t\tvalue C3 \n");
+    assertThat(readEntries.get(12)).isEqualTo("keyC4   very long\\\n" +
+        "value C4 over \\\n" +
+        "\t \tmultiple lines\n");
+  }
 
   private File createTestFile(final String content) {
     try {
