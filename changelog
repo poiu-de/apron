@@ -1,6 +1,13 @@
 Apron changelog
 ===============
 
+Version 2.1.1 - 2021-05-31
+--------------------------
+
+  - Fix handling of escaped CR LF line endings (#11)
+	  Thanks to Vladimir Kroupa and Jan Novotný
+
+
 Version 2.1.0 - 2019-12-20
 --------------------------
 
