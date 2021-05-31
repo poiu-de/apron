@@ -433,38 +433,32 @@ public class PropertyFileReaderTest {
   public void test_CrLfEndings() throws IOException {
     // - preparation
     final File propertyFile= this.createTestFile(""
-        + "keyA1=valueA1\n"
-        + " keyA2  =  valueA2\n"
-        + "\tkeyA3\t=\tvalue A3\t\n"
-        + "keyA4 = very long\\\r\n"
-        + "value A4 over \\\r\n"
-        + "multiple lines\r\n"
-        + "        \n"
-        + "keyB1:valueB1\n"
-        + " keyB2 : valueB2\n"
-        + "\t keyB3\t:\t value B3 \n"
-        + "keyB4 : very long\\\n"
-        + "value B4 over \\\n"
-        + "multiple lines\\\n"
-        + "\n"
-        + "keyC1 valueC1\n"
-        + "  keyC2   valueC2\n"
-        + "\t keyC3\t\tvalue C3 \n"
-        + "keyC4   very long\\\n"
-        + "value C4 over \\\n"
-        + "\t \tmultiple lines");
+      + "lf                       = One\\\nTwo\n"
+      + "cr                       = One\\\rTwo\r"
+      + "crlf_both_escaped        = One\\\r\\\nTwo\r\n"
+      + "crlf_only_first_escaped  = One\\\r\nTwo\r\n");
+    // assert our assumptions about the java.util.Properties implementation
+    assertThat(javaUtilProperties.size()).as("Check assumption about java.util.Properties size").isEqualTo(4);
+    assertThat(javaUtilProperties.containsKey("lf")).as("Check assumption about java.util.Properties keys").isTrue();
+    assertThat(javaUtilProperties.containsKey("cr")).as("Check assumption about java.util.Properties keys").isTrue();
+    assertThat(javaUtilProperties.containsKey("crlf_both_escaped")).as("Check assumption about java.util.Properties keys").isTrue();
+    assertThat(javaUtilProperties.containsKey("crlf_only_first_escaped")).as("Check assumption about java.util.Properties keys").isTrue();
+    assertThat(javaUtilProperties.getProperty("lf")).as("Check assumption about java.util.Properties values").isEqualTo("OneTwo");
+    assertThat(javaUtilProperties.getProperty("cr")).as("Check assumption about java.util.Properties values").isEqualTo("OneTwo");
+    assertThat(javaUtilProperties.getProperty("crlf_both_escaped")).as("Check assumption about java.util.Properties values").isEqualTo("OneTwo");
+    assertThat(javaUtilProperties.getProperty("crlf_only_first_escaped")).as("Check assumption about java.util.Properties values").isEqualTo("OneTwo");
 
     // - execution
-    final List<String> readEntries= new ArrayList<>();
+    final List<Entry> readEntries= new ArrayList<>();
     try (final PropertyFileReader reader= new PropertyFileReader(propertyFile);) {
       Entry entry;
       while ((entry= reader.readEntry()) != null) {
-        readEntries.add(entry.toCharSequence().toString());
+        readEntries.add(entry);
       }
     }
 
     // - validation
-    assertThat(readEntries.size()).isEqualTo(13);
+    assertThat(readEntries.size()).isEqualTo(javaUtilProperties.size());
     assertThat(readEntries.get(0)).isEqualTo("keyA1=valueA1\n");
     assertThat(readEntries.get(1)).isEqualTo(" keyA2  =  valueA2\n");
     assertThat(readEntries.get(2)).isEqualTo("\tkeyA3\t=\tvalue A3\t\n");
