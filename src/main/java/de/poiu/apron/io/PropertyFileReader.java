@@ -209,7 +209,18 @@ public class PropertyFileReader implements Closeable {
         break;
       }
 
-      escaped = c == '\\' && !escaped;
+      if (c == '\r' && escaped) {
+        // check for \r\n sequence - in that case, both should be escaped, keep escaped flag on
+        reader.mark(1);
+        final int nextCInt= reader.read();
+        // not the \r\n case
+        if (nextCInt != '\n') {
+          escaped = false;
+        }
+        reader.reset();
+      } else {
+        escaped = c == '\\' && !escaped;
+      }
     }
 
     return sb;
