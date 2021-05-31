@@ -437,6 +437,12 @@ public class PropertyFileReaderTest {
       + "cr                       = One\\\rTwo\r"
       + "crlf_both_escaped        = One\\\r\\\nTwo\r\n"
       + "crlf_only_first_escaped  = One\\\r\nTwo\r\n");
+
+    final Properties javaUtilProperties= new Properties();
+    try (final FileInputStream fis= new FileInputStream(propertyFile);) {
+      javaUtilProperties.load(fis);
+    }
+
     // assert our assumptions about the java.util.Properties implementation
     assertThat(javaUtilProperties.size()).as("Check assumption about java.util.Properties size").isEqualTo(4);
     assertThat(javaUtilProperties.containsKey("lf")).as("Check assumption about java.util.Properties keys").isTrue();
@@ -459,26 +465,10 @@ public class PropertyFileReaderTest {
 
     // - validation
     assertThat(readEntries.size()).isEqualTo(javaUtilProperties.size());
-    assertThat(readEntries.get(0)).isEqualTo("keyA1=valueA1\n");
-    assertThat(readEntries.get(1)).isEqualTo(" keyA2  =  valueA2\n");
-    assertThat(readEntries.get(2)).isEqualTo("\tkeyA3\t=\tvalue A3\t\n");
-    assertThat(readEntries.get(3)).isEqualTo("keyA4 = very long\\\r\n" +
-        "value A4 over \\\r\n" +
-        "multiple lines\r\n");
-    assertThat(readEntries.get(4)).isEqualTo("        \n");
-    assertThat(readEntries.get(5)).isEqualTo("keyB1:valueB1\n");
-    assertThat(readEntries.get(6)).isEqualTo(" keyB2 : valueB2\n");
-    assertThat(readEntries.get(7)).isEqualTo("\t keyB3\t:\t value B3 \n");
-    assertThat(readEntries.get(8)).isEqualTo("keyB4 : very long\\\n" +
-        "value B4 over \\\n" +
-        "multiple lines\\\n" +
-        "\n");
-    assertThat(readEntries.get(9)).isEqualTo("keyC1 valueC1\n");
-    assertThat(readEntries.get(10)).isEqualTo("  keyC2   valueC2\n");
-    assertThat(readEntries.get(11)).isEqualTo("\t keyC3\t\tvalue C3 \n");
-    assertThat(readEntries.get(12)).isEqualTo("keyC4   very long\\\n" +
-        "value C4 over \\\n" +
-        "\t \tmultiple lines\n");
+    assertThat(readEntries.get(0)).isEqualTo(new PropertyEntry("", "lf", "                       = ", "One\\\nTwo", "\n"));
+    assertThat(readEntries.get(1)).isEqualTo(new PropertyEntry("", "cr", "                       = ", "One\\\rTwo", "\r"));
+    assertThat(readEntries.get(2)).isEqualTo(new PropertyEntry("", "crlf_both_escaped", "        = ", "One\\\r\\\nTwo", "\r\n"));
+    assertThat(readEntries.get(3)).isEqualTo(new PropertyEntry("", "crlf_only_first_escaped", "  = ", "One\\\r\nTwo", "\r\n"));
   }
 
   private File createTestFile(final String content) {
