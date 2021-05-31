@@ -165,13 +165,6 @@ public class ReformatterTest {
 
     // - verification
 
-    System.out.println("SOLL:\n"
-      + "key one = value 1\n"
-      + "key two = value 2\n"
-    );
-    System.out.println("IST:\n"
-      + contentOf(f1));
-
     assertThat(contentOf(f1)).isEqualTo(""
       + "key\\ one = value 1\n"
       + "key\\ two = value 2\n"
