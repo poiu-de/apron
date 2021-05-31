@@ -18,8 +18,6 @@ package de.poiu.apron.io;
 import de.poiu.apron.entry.BasicEntry;
 import de.poiu.apron.entry.Entry;
 import de.poiu.apron.entry.PropertyEntry;
-import org.junit.Test;
-
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -27,6 +25,7 @@ import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
+import org.junit.Test;
 
 import static org.assertj.core.api.Assertions.assertThat;
 

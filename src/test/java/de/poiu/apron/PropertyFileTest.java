@@ -18,8 +18,6 @@ package de.poiu.apron;
 import de.poiu.apron.entry.BasicEntry;
 import de.poiu.apron.entry.Entry;
 import de.poiu.apron.entry.PropertyEntry;
-import org.junit.Test;
-
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
@@ -35,6 +33,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Set;
+import org.junit.Test;
 
 import static java.nio.charset.StandardCharsets.ISO_8859_1;
 import static java.nio.charset.StandardCharsets.UTF_8;
@@ -1939,6 +1938,9 @@ public class PropertyFileTest {
     assertThat(propertyFile.get(key1)).isEqualTo(value1);
     assertThat(propertyFile.get(key2)).isEqualTo(value2);
   }
+
+
+
 
   private File createTestFile(final String content) {
     return createTestFile(content, Charset.forName("UTF-8"));
