@@ -13,3 +13,7 @@ jdk:
   - openjdk16
   - openjdk-ea
 
+
+cache:
+  directories:
+  - $HOME/.m2
