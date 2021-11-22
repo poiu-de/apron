@@ -9,7 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        java: [9, 10, 11, 12, 13, 14, 15, 16, 17-ea]
+        java: [9, 10, 11, 12, 13, 14, 15, 16, 17, 18-ea]
 
     steps:
     - uses: kamiazya/setup-graphviz@v1
