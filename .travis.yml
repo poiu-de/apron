@@ -12,6 +12,7 @@ jdk:
   - openjdk15
   - openjdk16
   - openjdk17
+  - openjdk18
   - openjdk-ea
 
 
