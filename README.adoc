@@ -16,7 +16,8 @@ Marco Herrn <marco@mherrn.de>
 
 [.float-group]
 --
-image:apron-icon.svg[Apron,role="right", width="75"]
+image:apron-wide.svg[Apron,role="right", width="75"]
+
 Apron - Advanced Properties
 
 Read and write Java .properties files in a more sane manner.
