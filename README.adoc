@@ -4,11 +4,11 @@ Marco Herrn <marco@mherrn.de>
 2018-05-14
 :compat-mode!:
 :toc:
-:homepage: https://github.com/hupfdule/apron
-:download-page: https://github.com/hupfdule/apron/releases
+:homepage: https://github.com/poiu-de/apron
+:download-page: https://github.com/poiu-de/apron/releases
 :javadoc-url: https://javadoc.io/doc/de.poiu.apron/apron/
-:license-link: https://github.com/hupfdule/apron/blob/master/LICENSE.txt
-:kilt-homepage: https://github.com/hupfdule/kilt
+:license-link: https://github.com/poiu-de/apron/blob/master/LICENSE.txt
+:kilt-homepage: https://poiu-de.github.io/kilt
 :log4j2-jul-bridge: https://logging.apache.org/log4j/2.x/log4j-jul/index.html
 :slf4j-jul-bridge: https://www.slf4j.org/legacy.html#jul-to-slf4j
 :source-highlighter: prettify

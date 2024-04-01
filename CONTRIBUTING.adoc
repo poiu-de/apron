@@ -5,7 +5,7 @@ Thanks for your interest in contributing to Apron.
 == How to contribute
 
 If you intent to do larger changes it is advisable to open an
-https://github.com/hupfdule/kilt/issues[Issue] issue first, describing the
+https://github.com/poiu-de/apron/issues[Issue] issue first, describing the
 problem and the intentions. This helps reducing wasted effort and
 duplicated work by allowing This helps avoiding duplicate work or your
 changes being refused for some reason.  to discuss the change first.
@@ -15,16 +15,10 @@ and create a pull request.
 
 == What to contribute
 
-=== Website
-
-What is currently missing is a useful website. Anyone with some skills in
-web design who is willing to contribute to such a website is highly
-welcome.
-
 === Finding bugs
 
 Of course Apron has bugs. If you find them please file an
-https://github.com/hupfdule/apron/issues[Issue] so they can be resolved.
+https://github.com/poiu-de/apron/issues[Issue] so they can be resolved.
 
 Preparing pull request to solve issues is also highly welcome, of course.
 

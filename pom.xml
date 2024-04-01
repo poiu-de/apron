@@ -6,7 +6,7 @@
   <version>2.1.2-SNAPSHOT</version>
   <name>apron</name>
   <description>Advanced Properties — Read and write Java .properties files in a more sane manner.</description>
-  <url>https://github.com/hupfdule/apron</url>
+  <url>https://github.com/poiu-de/apron</url>
 
   <licenses>
     <license>
@@ -16,14 +16,14 @@
   </licenses>
 
   <scm>
-    <url>https://github.com/hupfdule/apron</url>
-    <connection>scm:git:git://github.com/hupfdule/apron.git</connection>
-    <developerConnection>scm:git:git@github.com:hupfdule/apron.git</developerConnection>
+    <url>https://github.com/poiu-de/apron</url>
+    <connection>scm:git:git://github.com/poiu-de/apron.git</connection>
+    <developerConnection>scm:git:git@github.com:poiu-de/apron.git</developerConnection>
     <tag>HEAD</tag>
   </scm>
 
   <issueManagement>
-    <url>https://github.com/hupfdule/apron/issues</url>
+    <url>https://github.com/poiu-de/apron/issues</url>
     <system>GitHub Issues</system>
   </issueManagement>
 
