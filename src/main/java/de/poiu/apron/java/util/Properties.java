@@ -362,7 +362,6 @@ public class Properties extends java.util.Properties {
   @Override
   public synchronized void forEach(BiConsumer<? super Object, ? super Object> action) {
     this.propertyFile.toMap().forEach(action);
-    final java.util.Properties g= new java.util.Properties();
   }
 
 
