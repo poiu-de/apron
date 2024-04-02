@@ -6,9 +6,8 @@ Thanks for your interest in contributing to Apron.
 
 If you intent to do larger changes it is advisable to open an
 https://github.com/poiu-de/apron/issues[Issue] issue first, describing the
-problem and the intentions. This helps reducing wasted effort and
-duplicated work by allowing This helps avoiding duplicate work or your
-changes being refused for some reason.  to discuss the change first.
+problem and the intentions. This helps avoiding duplicate work or your
+changes being refused for some reason.
 
 Of course you are free to just fork the project, do the intented changes
 and create a pull request.
@@ -17,10 +16,12 @@ and create a pull request.
 
 === Finding bugs
 
-Of course Apron has bugs. If you find them please file an
+Every software has bugs. If you find a bug in Apron please file an
 https://github.com/poiu-de/apron/issues[Issue] so they can be resolved.
 
-Preparing pull request to solve issues is also highly welcome, of course.
+Preparing pull requests to solve issues is also highly welcome, of course.
+In that case, please provide a commit with a unit test demonstrating the
+problem and another commit with the actual fix.
 
 === Writing code
 
