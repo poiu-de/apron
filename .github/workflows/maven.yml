@@ -9,7 +9,7 @@ jobs:
 
     strategy:
       matrix:
-        java: [17, 21, 24, 25-ea]
+        java: [17, 21, 25, 26, 27-ea]
 
     steps:
     - uses: ts-graphviz/setup-graphviz@v2
